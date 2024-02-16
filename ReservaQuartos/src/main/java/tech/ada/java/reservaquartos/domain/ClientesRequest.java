@@ -7,7 +7,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-
+//teste
 public class ClientesRequest {
 
         private static final String URL_VIACEP = "https://viacep.com.br/ws/";

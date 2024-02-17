@@ -20,12 +20,12 @@ public class Cliente {
     private Integer identificadorCliente;
     private String nomeCompleto;
     private String cpf ;
-    private Integer cep ;
+    private String cep ;
     private String endereco;
     private String telefone;
     private String email;
 
-    public Cliente(String nomeCompleto, String cpf, Integer cep, String endereco, String telefone, String email) {
+    public Cliente(String nomeCompleto, String cpf, String cep, String endereco, String telefone, String email) {
         this.nomeCompleto = nomeCompleto;
         this.cpf = cpf;
         this.cep = cep;

@@ -8,7 +8,8 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 //teste
-public class ClienteRequest {
+public record ClienteRequest(String nomeCompleto, String cpf, String cep, String endereco, String telefone, String email)
+ {
 
         private static final String URL_VIACEP = "https://viacep.com.br/ws/";
 

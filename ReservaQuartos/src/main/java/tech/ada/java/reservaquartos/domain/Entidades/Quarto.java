@@ -21,10 +21,9 @@ public class Quarto {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer identificadorQuarto;
     private Integer numeroQuarto;
-    private enum tipoQuarto {STANDART, SUPERIOR, DELUXE};
     private Integer capacidadeMaximaDePessoas;
     private BigDecimal precoPorNoite;
     private String descricao;
-
+    private enum tipoQuarto {STANDARD, SUPERIOR, DELUXE}
 
 }

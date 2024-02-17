@@ -1,13 +1,13 @@
-package tech.ada.java.reservaquartos.domain.Controller;
+package tech.ada.java.reservaquartos.Controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import tech.ada.java.reservaquartos.domain.Resquest.ClienteRequest;
+import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.domain.Entidades.Cliente;
-import tech.ada.java.reservaquartos.domain.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Repository.ClienteRepository;
 
 import java.util.List;
 import java.util.Optional;

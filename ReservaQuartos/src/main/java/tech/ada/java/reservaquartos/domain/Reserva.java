@@ -1,9 +1,20 @@
 package tech.ada.java.reservaquartos.domain;
 
+import jakarta.persistence.Entity;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+@Entity
+@Getter
+@Setter
+@EqualsAndHashCode
+@NoArgsConstructor
 public class Reserva {
     private Integer identificadorReserva;
     private LocalDateTime dataRealizacaoReserva;

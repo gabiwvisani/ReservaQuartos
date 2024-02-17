@@ -24,6 +24,17 @@ public class Quarto {
     private Integer capacidadeMaximaDePessoas;
     private BigDecimal precoPorNoite;
     private String descricao;
-    private enum tipoQuarto {STANDARD, SUPERIOR, DELUXE}
+    private TipoQuarto tipoQuarto;
+    public Quarto(Integer numeroQuarto, Integer capacidadeMaximaDePessoas, String descricao
+            , TipoQuarto tipoQuarto){
+        this.numeroQuarto = numeroQuarto;
+        this.capacidadeMaximaDePessoas = capacidadeMaximaDePessoas;
+        this.descricao = descricao;
+        this.tipoQuarto = tipoQuarto;
+    }
+    private enum TipoQuarto {STANDARD, SUPERIOR, DELUXE}
 
+    public Quarto(BigDecimal precoPorNoite){
+        this.precoPorNoite = precoPorNoite;
+    }
 }

@@ -1,4 +1,4 @@
-package tech.ada.java.reservaquartos.domain;
+package tech.ada.java.reservaquartos.domain.Entidades;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

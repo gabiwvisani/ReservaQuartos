@@ -1,10 +1,12 @@
-package tech.ada.java.reservaquartos.domain;
+package tech.ada.java.reservaquartos.domain.Entidades;
 
 import jakarta.persistence.Entity;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import tech.ada.java.reservaquartos.domain.Entidades.Cliente;
+import tech.ada.java.reservaquartos.domain.Entidades.Quarto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

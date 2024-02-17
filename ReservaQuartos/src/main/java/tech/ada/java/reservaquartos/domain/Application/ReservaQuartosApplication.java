@@ -1,4 +1,4 @@
-package tech.ada.java.reservaquartos;
+package tech.ada.java.reservaquartos.domain.Application;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.boot.SpringApplication;

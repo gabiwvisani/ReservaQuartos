@@ -1,4 +1,4 @@
-package tech.ada.java.reservaquartos.domain;
+package tech.ada.java.reservaquartos.domain.Resquest;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

@@ -25,8 +25,8 @@ public class QuartoController {
 
     @PostMapping("/quarto")
     public ResponseEntity<Quarto> cadastrarQuarto(@RequestBody QuartoRequest quartoRequest){
-        Quarto quarto = modelMapper.map(quartoRequest, Quarto.class);
-        Quarto novoQuarto = quartoRepository.save(quarto);
+        Quarto quartoConvertido = modelMapper.map(quartoRequest, Quarto.class);
+        Quarto novoQuarto = quartoRepository.save(quartoConvertido);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoQuarto);
     }
 

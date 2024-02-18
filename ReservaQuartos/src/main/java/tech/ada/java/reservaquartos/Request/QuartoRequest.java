@@ -1,10 +1,18 @@
 package tech.ada.java.reservaquartos.Request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 import java.math.BigDecimal;
 
-public record QuartoRequest(
-         Integer numeroQuarto,
-         Integer capacidadeMaximaDePessoas,
-         BigDecimal precoPorNoite,
-         String descricao){
+@Getter
+@Setter
+public class QuartoRequest{
+
+    private Integer numeroQuarto;
+    private Integer capacidadeMaximaDePessoas;
+    private BigDecimal precoPorNoite;
+    private String descricao;
+    private TipoQuarto tipoQuarto;
+    private enum TipoQuarto {STANDARD, SUPERIOR, DELUXE}
 }

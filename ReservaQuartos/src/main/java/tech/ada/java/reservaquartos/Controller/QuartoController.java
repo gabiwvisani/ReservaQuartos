@@ -4,12 +4,14 @@ import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 import tech.ada.java.reservaquartos.Request.QuartoRequest;
 import tech.ada.java.reservaquartos.domain.Entidades.Quarto;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
+
+import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class QuartoController {
@@ -30,12 +32,28 @@ public class QuartoController {
         return ResponseEntity.status(HttpStatus.CREATED).body(novoQuarto);
     }
 
-    // GET
+    @GetMapping("/quarto")
+    public List<Quarto> buscarTodos(){
+        List<Quarto> listaComTodos = quartoRepository.findAll();
+        return listaComTodos;
+    }
 
-    // GETBYID
+    @PatchMapping("/quarto/{id}")
+    public ResponseEntity<Quarto> alterarValorQuarto(
+            @PathVariable Integer id,
+            @RequestBody AlteraValorQuartoRequest request) throws Exception {
 
-    // PATCH
+        Optional<Quarto> optionalQuarto = quartoRepository.findById(id);
 
+        if (optionalQuarto.isPresent()) {
+            Quarto quartoModificado = optionalQuarto.get();
+            if (request.precoPorNoite() != null) quartoModificado.setPrecoPorNoite(request.precoPorNoite());
 
+            Quarto quartoSalvo = quartoRepository.save(quartoModificado);
+            return ResponseEntity.ok(quartoSalvo);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
 
+    }
 }

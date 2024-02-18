@@ -35,28 +35,41 @@ public class ClienteController {
         return listaTodosClientes;
     }
 
+    @GetMapping("/cliente/{cpf}")
+    public ResponseEntity<?> buscarClientePorCPF(@PathVariable String cpf) {
+        Optional<Cliente> clienteOptional = clienteRepository.findByCpf(cpf);
+
+        if (clienteOptional.isPresent()) {
+            return ResponseEntity.ok(clienteOptional.get());
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse("Não foi localizado um cliente com este CPF.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
+
     @PatchMapping("/cliente/{id}")
-    public ResponseEntity<Cliente> alterarCliente(
+    public ResponseEntity<?> alterarCliente(
             @PathVariable Integer id,
             @RequestBody ClienteRequest request) {
 
         Optional<Cliente> optionalCliente = clienteRepository.findById(id);
 
-        if(optionalCliente.isPresent()) {
+        if (optionalCliente.isPresent()) {
             Cliente clienteModificado = optionalCliente.get();
 
-            if(request.nomeCompleto() != null) clienteModificado.setNomeCompleto(request.nomeCompleto());
-            if(request.cpf() != null) clienteModificado.setCpf(request.cpf());
-            if(request.cep() != null) clienteModificado.setCep(request.cep());
-            if(request.endereco() != null) clienteModificado.setEndereco(request.endereco());
-            if(request.telefone() != null) clienteModificado.setTelefone(request.telefone());
-            if(request.email() != null) clienteModificado.setEmail(request.email());
+            if (request.nomeCompleto() != null) clienteModificado.setNomeCompleto(request.nomeCompleto());
+            if (request.cpf() != null) clienteModificado.setCpf(request.cpf());
+            if (request.cep() != null) clienteModificado.setCep(request.cep());
+            if (request.endereco() != null) clienteModificado.setEndereco(request.endereco());
+            if (request.telefone() != null) clienteModificado.setTelefone(request.telefone());
+            if (request.email() != null) clienteModificado.setEmail(request.email());
 
             Cliente clienteAtualizado = clienteRepository.save(clienteModificado);
             return ResponseEntity.ok(clienteAtualizado);
 
         } else {
-            return ResponseEntity.notFound().build();
+            ErrorResponse errorResponse = new ErrorResponse("Não foi localizado um cliente com este ID.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
 

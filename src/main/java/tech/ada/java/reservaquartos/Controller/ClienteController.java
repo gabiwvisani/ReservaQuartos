@@ -24,8 +24,8 @@ public class ClienteController {
 
     @PostMapping("/cliente")
     public ResponseEntity<Cliente> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
-        Cliente cliente = modelMapper.map(clienteRequest, Cliente.class);
-        Cliente novoCliente = clienteRepository.save(cliente);
+        Cliente clienteConvertido = modelMapper.map(clienteRequest, Cliente.class);
+        Cliente novoCliente = clienteRepository.save(clienteConvertido);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
     }
 

@@ -1,5 +1,8 @@
 package tech.ada.java.reservaquartos.Request;
 
+import lombok.Getter;
+import lombok.Setter;
+
 //import com.google.gson.JsonObject;
 //import com.google.gson.JsonParser;
 //import org.apache.http.HttpResponse;
@@ -8,8 +11,15 @@ package tech.ada.java.reservaquartos.Request;
 //import org.apache.http.impl.client.HttpClients;
 //import org.apache.http.util.EntityUtils;
 //teste
-public record ClienteRequest(String nomeCompleto, String cpf, String cep, String endereco, String telefone, String email)
- {
+@Getter
+@Setter
+public class ClienteRequest {
+ private String nomeCompleto;
+ private String cpf;
+ private String cep;
+ private String endereco;
+ private String telefone;
+ private String email;
 //
 //        private static final String URL_VIACEP = "https://viacep.com.br/ws/";
 //

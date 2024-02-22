@@ -12,7 +12,7 @@ import tech.ada.java.reservaquartos.Repository.ClienteRepository;
 import java.util.List;
 import java.util.Optional;
 
-@RestController("/cliente")
+@RestController
 public class ClienteController {
     private final ClienteRepository clienteRepository;
     private final ModelMapper modelMapper;
@@ -23,8 +23,15 @@ public class ClienteController {
     }
 
     @PostMapping("/cliente")
-    public ResponseEntity<Cliente> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
+    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
         Cliente clienteConvertido = modelMapper.map(clienteRequest, Cliente.class);
+        Optional<Cliente> clienteExistente = clienteRepository.findByCpf(clienteRequest.getCpf());
+
+        if (clienteExistente.isPresent()) {
+            ErrorResponse errorResponse = new ErrorResponse("Já existe um cliente cadastrado com este CPF.");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+        }
+
         Cliente novoCliente = clienteRepository.save(clienteConvertido);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
     }
@@ -57,12 +64,12 @@ public class ClienteController {
         if (optionalCliente.isPresent()) {
             Cliente clienteModificado = optionalCliente.get();
 
-            if (request.nomeCompleto() != null) clienteModificado.setNomeCompleto(request.nomeCompleto());
-            if (request.cpf() != null) clienteModificado.setCpf(request.cpf());
-            if (request.cep() != null) clienteModificado.setCep(request.cep());
-            if (request.endereco() != null) clienteModificado.setEndereco(request.endereco());
-            if (request.telefone() != null) clienteModificado.setTelefone(request.telefone());
-            if (request.email() != null) clienteModificado.setEmail(request.email());
+            if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());
+            if (request.getCpf() != null) clienteModificado.setCpf(request.getCpf());
+            if (request.getCep() != null) clienteModificado.setCep(request.getCep());
+            if (request.getEndereco() != null) clienteModificado.setEndereco(request.getEndereco());
+            if (request.getTelefone() != null) clienteModificado.setTelefone(request.getTelefone());
+            if (request.getEmail() != null) clienteModificado.setEmail(request.getEmail());
 
             Cliente clienteAtualizado = clienteRepository.save(clienteModificado);
             return ResponseEntity.ok(clienteAtualizado);

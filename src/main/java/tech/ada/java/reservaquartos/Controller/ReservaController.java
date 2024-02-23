@@ -6,7 +6,11 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.ErrorResponse;
 import org.springframework.web.bind.annotation.*;
+import tech.ada.java.reservaquartos.Domain.Cliente;
+import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Domain.Reserva;
+import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.ReservaRequest;
 //import tech.ada.java.reservaquartos.domain.Entidades.Reserva;
@@ -19,16 +23,35 @@ import java.util.Optional;
 @RestController
 public class ReservaController {
     private final ReservaRepository reservaRepository;
+    private final QuartoRepository quartoRepository;
+    private final ClienteRepository clienteRepository;
     private final ModelMapper modelMapper;
     @Autowired
-    public ReservaController(ReservaRepository reservaRepository, ModelMapper modelMapper) {
+    public ReservaController(ReservaRepository reservaRepository,
+                             QuartoRepository quartoRepository,
+                             ClienteRepository clienteRepository,
+                             ModelMapper modelMapper) {
         this.reservaRepository = reservaRepository;
+        this.quartoRepository = quartoRepository;
+        this.clienteRepository = clienteRepository;
         this.modelMapper = modelMapper;
     }
 
     @PostMapping("/reserva")
-    public ResponseEntity<Reserva> cadastrarQuarto(@RequestBody ReservaRequest reservaRequest){
+    public ResponseEntity<Reserva> cadastrarQuarto(@RequestParam Integer idQuarto,
+                                                   @RequestParam Integer idCliente,
+            @RequestBody ReservaRequest reservaRequest){
+        // Buscando o quarto pelo ID
+        Quarto quarto = quartoRepository.findById(idQuarto)
+                .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
+
+        // Buscando o cliente pelo ID
+        Cliente cliente = clienteRepository.findById(idCliente)
+                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
+
         Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
+        reservaConvertido.setQuarto(quarto);
+        reservaConvertido.setCliente(cliente);
         Reserva novaReserva = reservaRepository.save(reservaConvertido);
         return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
     }
@@ -64,35 +87,35 @@ public class ReservaController {
         if(optionalReserva.isPresent()){
             Reserva reservaModificada = optionalReserva.get();
 
-            if (request.identificadorReserva() != null) {
-                reservaModificada.setIdentificadorReserva(request.identificadorReserva());
+            if (request.getIdentificadorReserva() != null) {
+                reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
             }
-            if (request.dataRealizacaoReserva() != null) {
-                reservaModificada.setDataRealizacaoReserva(request.dataRealizacaoReserva());
+            if (request.getDataRealizacaoReserva() != null) {
+                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
             }
-            if (request.dataAtualizacaoReserva() != null) {
-                reservaModificada.setDataAtualizacaoReserva(request.dataAtualizacaoReserva());
+            if (request.getDataAtualizacaoReserva() != null) {
+                reservaModificada.setDataAtualizacaoReserva(request.getDataAtualizacaoReserva());
             }
-            if (request.dataEntrada() != null) {
-                reservaModificada.setDataEntrada(request.dataEntrada());
+            if (request.getDataEntrada() != null) {
+                reservaModificada.setDataEntrada(request.getDataEntrada());
             }
-            if (request.dataSaida() != null) {
-                reservaModificada.setDataSaida(request.dataSaida());
+            if (request.getDataSaida() != null) {
+                reservaModificada.setDataSaida(request.getDataSaida());
             }
-            if (request.numeroHospedes() != null) {
-                reservaModificada.setNumeroHospedes(request.numeroHospedes());
+            if (request.getNumeroHospedes() != null) {
+                reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
             }
-            if (request.quarto() != null) {
-                reservaModificada.setQuarto(request.quarto());
+            if (request.getQuarto() != null) {
+                reservaModificada.setQuarto(request.getQuarto());
             }
-            if (request.cliente() != null) {
-                reservaModificada.setCliente(request.cliente());
+            if (request.getCliente() != null) {
+                reservaModificada.setCliente(request.getCliente());
             }
-            if (request.statusConfirmada() != null) {
-                reservaModificada.setStatusConfirmada(request.statusConfirmada());
+            if (request.getStatusConfirmada() != null) {
+                reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
             }
-            if (request.valorTotalReserva() != null) {
-                reservaModificada.setValorTotalReserva(request.valorTotalReserva());
+            if (request.getValorTotalReserva() != null) {
+                reservaModificada.setValorTotalReserva(request.getValorTotalReserva());
             }
 
             Reserva reservaAtualizada = reservaRepository.save(reservaModificada);

@@ -14,5 +14,5 @@ public class QuartoRequest{
     private BigDecimal precoPorNoite;
     private String descricao;
     private TipoQuarto tipoQuarto;
-    private enum TipoQuarto {STANDARD, SUPERIOR, DELUXE}
+    public enum TipoQuarto {STANDARD, SUPERIOR, DELUXE};
 }

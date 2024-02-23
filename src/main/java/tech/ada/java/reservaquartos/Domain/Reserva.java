@@ -17,6 +17,7 @@ import java.time.LocalDateTime;
 @EqualsAndHashCode
 @NoArgsConstructor
 public class Reserva {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer identificadorReserva;
@@ -31,6 +32,19 @@ public class Reserva {
     private Cliente cliente;
     private Boolean statusConfirmada;
     private BigDecimal valorTotalReserva;
-    public enum formaPagamento {CARTAO_DE_CREDITO, DINHEIRO, PIX};
+    private  FormaPagamento formaPagamento;
+    public enum FormaPagamento {CARTAO_DE_CREDITO, DINHEIRO, PIX};
+    public Reserva(LocalDateTime dataRealizacaoReserva, LocalDateTime dataAtualizacaoReserva, LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada, BigDecimal valorTotalReserva, FormaPagamento formaPagamento) {
+        this.dataRealizacaoReserva = dataRealizacaoReserva;
+        this.dataAtualizacaoReserva = dataAtualizacaoReserva;
+        this.dataEntrada = dataEntrada;
+        this.dataSaida = dataSaida;
+        this.numeroHospedes = numeroHospedes;
+        this.quarto = quarto;
+        this.cliente = cliente;
+        this.statusConfirmada = statusConfirmada;
+        this.valorTotalReserva = valorTotalReserva;
+        this.formaPagamento= formaPagamento;
+    }
 
 }

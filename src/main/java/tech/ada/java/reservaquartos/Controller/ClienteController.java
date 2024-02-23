@@ -72,7 +72,15 @@ public class ClienteController {
             Cliente clienteModificado = optionalCliente.get();
 
             if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());
-            if (request.getCpf() != null) clienteModificado.setCpf(request.getCpf());
+            if (request.getCpf() != null)
+            {
+                String mensagemErro = Cliente.validarCPF(request.getCpf());
+                if (mensagemErro != null) {
+                    ErrorResponse errorResponse = new ErrorResponse(mensagemErro);
+                    return ResponseEntity.badRequest().body(errorResponse);
+                }
+            }
+                clienteModificado.setCpf(request.getCpf());
             if (request.getCep() != null) clienteModificado.setCep(request.getCep());
             if (request.getEndereco() != null) clienteModificado.setEndereco(request.getEndereco());
             if (request.getTelefone() != null) clienteModificado.setTelefone(request.getTelefone());

@@ -34,7 +34,7 @@ public class Reserva {
     private BigDecimal valorTotalReserva;
     private  FormaPagamento formaPagamento;
     public enum FormaPagamento {CARTAO_DE_CREDITO, DINHEIRO, PIX};
-    public Reserva(LocalDateTime dataRealizacaoReserva, LocalDateTime dataAtualizacaoReserva, LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada, BigDecimal valorTotalReserva, FormaPagamento formaPagamento) {
+    public Reserva(LocalDateTime dataRealizacaoReserva, LocalDateTime dataAtualizacaoReserva, LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada,  FormaPagamento formaPagamento) {
         this.dataRealizacaoReserva = dataRealizacaoReserva;
         this.dataAtualizacaoReserva = dataAtualizacaoReserva;
         this.dataEntrada = dataEntrada;
@@ -43,8 +43,16 @@ public class Reserva {
         this.quarto = quarto;
         this.cliente = cliente;
         this.statusConfirmada = statusConfirmada;
-        this.valorTotalReserva = valorTotalReserva;
+        BigDecimal diferencaDias = BigDecimal.valueOf(dataSaida.toEpochDay() - dataEntrada.toEpochDay());
+        BigDecimal precoPorNoite = quarto.getPrecoPorNoite();
+        this.valorTotalReserva = diferencaDias.multiply(precoPorNoite);
         this.formaPagamento= formaPagamento;
     }
+    public void setValorTotalReserva(){
+        BigDecimal diferencaDias = BigDecimal.valueOf(dataSaida.toEpochDay() - dataEntrada.toEpochDay());
+        BigDecimal precoPorNoite = this.quarto.getPrecoPorNoite();
+        this.valorTotalReserva = diferencaDias.multiply(precoPorNoite);
+    }
+
 
 }

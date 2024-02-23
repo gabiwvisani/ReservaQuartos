@@ -22,15 +22,12 @@ public class Cliente {
     @NotBlank
     private String nomeCompleto;
     @NotBlank
-    @Pattern(regexp = "\\d{11}", message = "O CPF deve conter exatamente 11 dígitos.")
     private String cpf ;
     @NotBlank
-    @Pattern(regexp = "\\d{5}-\\d{3}", message = "O CEP deve estar no formato XXXXX-XXX")
     private String cep ;
     @NotBlank
     private String endereco;
     @NotBlank
-    @Pattern(regexp = "\\(\\d{2}\\)\\s\\d{5}-\\d{4}", message = "O telefone deve estar no formato (XX) XXXXX-XXXX")
     private String telefone;
     @NotBlank
     @Email
@@ -45,6 +42,11 @@ public class Cliente {
         this.email = email;
     }
 
-
+    public static String validarCPF(String cpf) {
+        if (cpf == null || cpf.length() != 11 || !cpf.chars().allMatch(Character::isDigit)) {
+            return "O CPF deve conter exatamente 11 dígitos numéricos.";
+        }
+        return null;
+    }
 
 }

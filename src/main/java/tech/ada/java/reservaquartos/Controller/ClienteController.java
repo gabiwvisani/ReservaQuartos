@@ -24,6 +24,13 @@ public class ClienteController {
 
     @PostMapping("/cliente")
     public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
+
+        String mensagemErro = Cliente.validarCPF(clienteRequest.getCpf());
+        if (mensagemErro != null) {
+            ErrorResponse errorResponse = new ErrorResponse(mensagemErro);
+            return ResponseEntity.badRequest().body(errorResponse);
+        }
+
         Cliente clienteConvertido = modelMapper.map(clienteRequest, Cliente.class);
         Optional<Cliente> clienteExistente = clienteRepository.findByCpf(clienteRequest.getCpf());
 

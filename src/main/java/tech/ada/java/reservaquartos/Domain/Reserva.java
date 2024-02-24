@@ -10,6 +10,7 @@ import tech.ada.java.reservaquartos.Domain.Cliente;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Getter
@@ -34,9 +35,9 @@ public class Reserva {
     private BigDecimal valorTotalReserva;
     private  FormaPagamento formaPagamento;
     public enum FormaPagamento {CARTAO_DE_CREDITO, DINHEIRO, PIX};
-    public Reserva(LocalDateTime dataRealizacaoReserva, LocalDateTime dataAtualizacaoReserva, LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada,  FormaPagamento formaPagamento) {
-        this.dataRealizacaoReserva = dataRealizacaoReserva;
-        this.dataAtualizacaoReserva = dataAtualizacaoReserva;
+    public Reserva( LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada,  FormaPagamento formaPagamento) {
+        this.dataRealizacaoReserva = LocalDateTime.now();
+        this.dataAtualizacaoReserva = LocalDateTime.now();
         this.dataEntrada = dataEntrada;
         this.dataSaida = dataSaida;
         this.numeroHospedes = numeroHospedes;
@@ -49,9 +50,19 @@ public class Reserva {
         this.formaPagamento= formaPagamento;
     }
     public void setValorTotalReserva(){
-        BigDecimal diferencaDias = BigDecimal.valueOf(dataSaida.toEpochDay() - dataEntrada.toEpochDay());
+        long diferencaDias = ChronoUnit.DAYS.between(dataEntrada, dataSaida);
+        if (diferencaDias == 0) {
+            diferencaDias = 1;
+        }
         BigDecimal precoPorNoite = this.quarto.getPrecoPorNoite();
-        this.valorTotalReserva = diferencaDias.multiply(precoPorNoite);
+        this.valorTotalReserva = BigDecimal.valueOf(diferencaDias).multiply(precoPorNoite);
+
+    }
+    public void setDataAtualizacaoReserva(){
+        this.dataAtualizacaoReserva=LocalDateTime.now();
+    }
+    public void setDataRealizacaoReserva(){
+        this.dataRealizacaoReserva=LocalDateTime.now();
     }
 
 

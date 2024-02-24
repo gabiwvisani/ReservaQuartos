@@ -13,8 +13,10 @@ import tech.ada.java.reservaquartos.Repository.ClienteRepository;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.ReservaRequest;
+import tech.ada.java.reservaquartos.Service.ReservaService;
 //import tech.ada.java.reservaquartos.domain.Entidades.Reserva;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.Optional;
 @RestController
 public class ReservaController {
     private final ReservaRepository reservaRepository;
+    private final ReservaService reservaService;
     private final QuartoRepository quartoRepository;
     private final ClienteRepository clienteRepository;
     private final ModelMapper modelMapper;
@@ -30,29 +33,38 @@ public class ReservaController {
     public ReservaController(ReservaRepository reservaRepository,
                              QuartoRepository quartoRepository,
                              ClienteRepository clienteRepository,
+                             ReservaService reservaService,
                              ModelMapper modelMapper) {
         this.reservaRepository = reservaRepository;
         this.quartoRepository = quartoRepository;
         this.clienteRepository = clienteRepository;
+        this.reservaService = reservaService;
         this.modelMapper = modelMapper;
     }
 
     @PostMapping("/reserva")
-    public ResponseEntity<Reserva> cadastrarQuarto(@RequestParam Integer idQuarto,
+    public ResponseEntity<?> cadastrarQuarto(@RequestParam Integer idQuarto,
                                                    @RequestParam Integer idCliente,
-            @RequestBody ReservaRequest reservaRequest){
+                                                   @RequestBody ReservaRequest reservaRequest){
         Quarto quarto = quartoRepository.findById(idQuarto)
                 .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
 
         Cliente cliente = clienteRepository.findById(idCliente)
                 .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
 
-        Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
-        reservaConvertido.setQuarto(quarto);
-        reservaConvertido.setCliente(cliente);
-        reservaConvertido.setValorTotalReserva();
-        Reserva novaReserva = reservaRepository.save(reservaConvertido);
-        return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
+        LocalDate dataEntrada = reservaRequest.getDataEntrada();
+        LocalDate dataSaida = reservaRequest.getDataSaida();
+        Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida);
+        if (!hasConflicts) {
+            Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
+            reservaConvertido.setQuarto(quarto);
+            reservaConvertido.setCliente(cliente);
+            reservaConvertido.setValorTotalReserva();
+            Reserva novaReserva = reservaRepository.save(reservaConvertido);
+            return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
+        }
     }
 
 
@@ -87,6 +99,10 @@ public class ReservaController {
 
         if(optionalReserva.isPresent()){
             Reserva reservaModificada = optionalReserva.get();
+            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida());
+            if (hasConflicts) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
+            }
 
             if (request.getIdentificadorReserva() != null) {
                 reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
@@ -142,19 +158,22 @@ public class ReservaController {
 
         if(optionalReserva.isPresent()){
             Reserva reservaModificada = optionalReserva.get();
-
-                reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
-                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
-                reservaModificada.setDataAtualizacaoReserva(request.getDataAtualizacaoReserva());
-                reservaModificada.setDataEntrada(request.getDataEntrada());
-                reservaModificada.setDataSaida(request.getDataSaida());
-                reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
-                Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -> new RuntimeException("Quarto não encontrado"));;
-                reservaModificada.setQuarto(quarto);
-                reservaModificada.setValorTotalReserva();
-                Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));;
-                reservaModificada.setCliente(cliente);
-                reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
+            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida());
+            if (hasConflicts) {
+                return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
+            }
+            reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
+            reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
+            reservaModificada.setDataAtualizacaoReserva(request.getDataAtualizacaoReserva());
+            reservaModificada.setDataEntrada(request.getDataEntrada());
+            reservaModificada.setDataSaida(request.getDataSaida());
+            reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
+            Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -> new RuntimeException("Quarto não encontrado"));;
+            reservaModificada.setQuarto(quarto);
+            reservaModificada.setValorTotalReserva();
+            Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));;
+            reservaModificada.setCliente(cliente);
+            reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
             Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
             return ResponseEntity.ok(reservaAtualizada);
         } else {

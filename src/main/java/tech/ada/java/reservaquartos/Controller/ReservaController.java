@@ -54,7 +54,7 @@ public class ReservaController {
 
         LocalDate dataEntrada = reservaRequest.getDataEntrada();
         LocalDate dataSaida = reservaRequest.getDataSaida();
-        Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida);
+        boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida);
         if (!hasConflicts) {
             Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
             reservaConvertido.setQuarto(quarto);

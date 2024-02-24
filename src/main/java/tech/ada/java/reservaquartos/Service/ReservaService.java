@@ -17,6 +17,6 @@ public class ReservaService {
 
     public boolean verificaConflitosReserva(Integer idQuarto, LocalDate dataEntrada, LocalDate dataSaida) {
         List<Reserva> conflitos = reservaRepository.encontraConflitosReserva(idQuarto, dataEntrada, dataSaida);
-        return conflitos.isEmpty();
+        return !conflitos.isEmpty();
     }
 }

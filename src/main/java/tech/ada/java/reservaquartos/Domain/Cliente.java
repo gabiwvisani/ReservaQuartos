@@ -19,18 +19,11 @@ public class Cliente {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer identificadorCliente;
-    @NotBlank
     private String nomeCompleto;
-    @NotBlank
     private String cpf ;
-    @NotBlank
     private String cep ;
-    @NotBlank
     private String endereco;
-    @NotBlank
     private String telefone;
-    @NotBlank
-    @Email
     private String email;
 
     public Cliente(String nomeCompleto, String cpf, String cep, String endereco, String telefone, String email) {

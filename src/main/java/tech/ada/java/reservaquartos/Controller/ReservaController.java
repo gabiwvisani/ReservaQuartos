@@ -62,11 +62,11 @@ public class ReservaController {
                 Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
                 reservaConvertido.setQuarto(quarto);
                 reservaConvertido.setCliente(cliente);
-                //reservaConvertido.setValorTotalReserva();
+                reservaConvertido.setValorTotalReserva();
                 reservaConvertido.setDataAtualizacaoReserva();
                 reservaConvertido.setDataRealizacaoReserva();
                 Reserva novaReserva = reservaRepository.save(reservaConvertido);
-                novaReserva.setValorTotalReserva();
+                //novaReserva.setValorTotalReserva();
                 return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
             }else{
                 return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
@@ -78,9 +78,9 @@ public class ReservaController {
 
 
     @GetMapping("/reserva")
-    public ResponseEntity<List<Reserva>> findAllReservas(){
+    public List<Reserva> findAllReservas(){
         List<Reserva> listaReservas = reservaRepository.findAll();
-        return ResponseEntity.ok(listaReservas);
+        return listaReservas;
     }
 
 

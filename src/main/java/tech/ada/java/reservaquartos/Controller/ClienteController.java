@@ -75,7 +75,10 @@ public class ClienteController {
             Cliente clienteModificado = optionalCliente.get();
 
             if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());
-            if (request.getCpf() != null)
+            if (request.getCpf() != null  &&
+                   // !request.getCpf().equals(null) //&&
+                    !request.getCpf().equals(clienteModificado.getCpf() )
+            )
             {
                 try
                 {
@@ -93,9 +96,9 @@ public class ClienteController {
                 }
 
 
-
-            }
                 clienteModificado.setCpf(request.getCpf());
+            }
+
             if (request.getCep() != null) clienteModificado.setCep(request.getCep());
             if (request.getEndereco() != null) clienteModificado.setEndereco(request.getEndereco());
             if (request.getTelefone() != null) clienteModificado.setTelefone(request.getTelefone());

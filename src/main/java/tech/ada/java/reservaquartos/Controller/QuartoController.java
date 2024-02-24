@@ -10,6 +10,7 @@ import tech.ada.java.reservaquartos.Request.QuartoRequest;
 import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -50,6 +51,20 @@ public class QuartoController {
         }
     }
 
+    @GetMapping(value = "/quarto", params = {"tipoQuarto"})
+    public List<Quarto> buscarPorTipoQuarto(@RequestParam String tipoQuarto){
+        return quartoRepository.findByTipoQuarto(Quarto.TipoQuarto.valueOf(tipoQuarto));
+    }
+
+    @GetMapping(value = "/quarto", params = {"capacidadeMaximaDePessoas"})
+    public List<Quarto> buscarPorCapacidadeMaxima(@RequestParam String capacidadeMaximaDePessoas){
+        return quartoRepository.findByCapacidadeMaximaDePessoas(Integer.valueOf(capacidadeMaximaDePessoas));
+    }
+
+    @GetMapping(value = "/quarto", params = {"precoPorNoite"})
+    public List<Quarto> buscarPorPrecoPorNoite(@RequestParam String precoPorNoite){
+        return quartoRepository.findByPrecoPorNoite(BigDecimal.valueOf(Long.parseLong(precoPorNoite)));
+    }
     @PatchMapping("/quarto/{id}")
     public ResponseEntity<Quarto> alterarValorQuarto(
             @PathVariable Integer id,

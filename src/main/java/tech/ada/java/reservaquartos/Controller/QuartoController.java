@@ -38,6 +38,18 @@ public class QuartoController {
         return listaComTodos;
     }
 
+    @GetMapping("/quarto/{id}")
+    public ResponseEntity<?> buscarQuartoPorID(@PathVariable Integer id) {
+        Optional<Quarto> optionalQuarto = quartoRepository.findById(id);
+
+        if (optionalQuarto.isPresent()) {
+            return ResponseEntity.ok(optionalQuarto.get());
+        } else {
+            ErrorResponse errorResponse = new ErrorResponse("Não foi localizado um quarto com este ID.");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
+
     @PatchMapping("/quarto/{id}")
     public ResponseEntity<Quarto> alterarValorQuarto(
             @PathVariable Integer id,

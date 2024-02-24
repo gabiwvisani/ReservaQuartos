@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Service.ClienteService;
 
 import java.util.List;
 import java.util.Optional;
@@ -31,14 +32,14 @@ public class ClienteController {
             return ResponseEntity.badRequest().body(errorResponse);
         }
 
-        Cliente clienteConvertido = modelMapper.map(clienteRequest, Cliente.class);
-        Optional<Cliente> clienteExistente = clienteRepository.findByCpf(clienteRequest.getCpf());
-
-        if (clienteExistente.isPresent()) {
-            ErrorResponse errorResponse = new ErrorResponse("Já existe um cliente cadastrado com este CPF.");
+        try {
+            ClienteService.verificarDuplicidadeCpf(clienteRequest.getCpf());
+        } catch (IllegalArgumentException ex) {
+            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
 
+        Cliente clienteConvertido = modelMapper.map(clienteRequest, Cliente.class);
         Cliente novoCliente = clienteRepository.save(clienteConvertido);
         return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);
     }
@@ -74,11 +75,23 @@ public class ClienteController {
             if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());
             if (request.getCpf() != null)
             {
+                try
+                {
+                    ClienteService.verificarDuplicidadeCpf(request.getCpf());
+                } catch (IllegalArgumentException ex) {
+                    ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
+                }
+
                 String mensagemErro = Cliente.validarCPF(request.getCpf());
-                if (mensagemErro != null) {
+                if (mensagemErro != null)
+                {
                     ErrorResponse errorResponse = new ErrorResponse(mensagemErro);
                     return ResponseEntity.badRequest().body(errorResponse);
                 }
+
+
+
             }
                 clienteModificado.setCpf(request.getCpf());
             if (request.getCep() != null) clienteModificado.setCep(request.getCep());

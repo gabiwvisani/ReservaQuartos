@@ -13,7 +13,6 @@ public class ReservaQuartosApplication {
         SpringApplication.run(ReservaQuartosApplication.class, args);
     }
     @Bean
-    // Criamos o Bean de configuracao do modelMapper, isso significa que ensinamos o spring como criar o ModelMapper
     public ModelMapper modelMapper() {
         return new ModelMapper();
     }

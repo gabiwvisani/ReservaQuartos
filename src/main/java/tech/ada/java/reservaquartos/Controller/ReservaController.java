@@ -17,6 +17,7 @@ import tech.ada.java.reservaquartos.Service.ReservaService;
 //import tech.ada.java.reservaquartos.domain.Entidades.Reserva;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,27 +56,35 @@ public class ReservaController {
         LocalDate dataEntrada = reservaRequest.getDataEntrada();
         LocalDate dataSaida = reservaRequest.getDataSaida();
         boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida);
+        boolean dataValida = reservaService.validaData(dataEntrada, dataSaida);
         if (!hasConflicts) {
-            Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
-            reservaConvertido.setQuarto(quarto);
-            reservaConvertido.setCliente(cliente);
-            reservaConvertido.setValorTotalReserva();
-            Reserva novaReserva = reservaRepository.save(reservaConvertido);
-            return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
+            if(dataValida) {
+                Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);
+                reservaConvertido.setQuarto(quarto);
+                reservaConvertido.setCliente(cliente);
+                //reservaConvertido.setValorTotalReserva();
+                reservaConvertido.setDataAtualizacaoReserva();
+                reservaConvertido.setDataRealizacaoReserva();
+                Reserva novaReserva = reservaRepository.save(reservaConvertido);
+                novaReserva.setValorTotalReserva();
+                return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);
+            }else{
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
+            }
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
         }
     }
 
 
-    @GetMapping("/reservas")
+    @GetMapping("/reserva")
     public ResponseEntity<List<Reserva>> findAllReservas(){
         List<Reserva> listaReservas = reservaRepository.findAll();
         return ResponseEntity.ok(listaReservas);
     }
 
 
-    @GetMapping("/reservas/{id}")
+    @GetMapping("/reserva/{id}")
     public ResponseEntity<?> findReservaById(@PathVariable Integer id){
         Optional<Reserva> reservaOptional = reservaRepository.findById(id);
 
@@ -88,7 +97,7 @@ public class ReservaController {
         }
     }
 
-    @PatchMapping("/reservas/{id}")
+    @PatchMapping("/reserva/{id}")
     public ResponseEntity<?> alterarReserva(
             @PathVariable Integer id,
             @RequestParam Integer idQuarto,
@@ -99,19 +108,16 @@ public class ReservaController {
 
         if(optionalReserva.isPresent()){
             Reserva reservaModificada = optionalReserva.get();
-            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida());
+            boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida());
             if (hasConflicts) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
             }
-
+            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
+            if (!dataValida) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
+            }
             if (request.getIdentificadorReserva() != null) {
                 reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
-            }
-            if (request.getDataRealizacaoReserva() != null) {
-                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
-            }
-            if (request.getDataAtualizacaoReserva() != null) {
-                reservaModificada.setDataAtualizacaoReserva(request.getDataAtualizacaoReserva());
             }
             if (request.getDataEntrada() != null) {
                 reservaModificada.setDataEntrada(request.getDataEntrada());
@@ -137,7 +143,7 @@ public class ReservaController {
             if (request.getStatusConfirmada() != null) {
                 reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
             }
-
+            reservaModificada.setDataAtualizacaoReserva();
             Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
             return ResponseEntity.ok(reservaAtualizada);
 
@@ -147,7 +153,7 @@ public class ReservaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
-    @PutMapping("/reservas/{id}")
+    @PutMapping("/reserva/{id}")
     public ResponseEntity<?> alterarTudoReserva(
             @PathVariable Integer id,
             @RequestParam Integer idQuarto,
@@ -162,9 +168,17 @@ public class ReservaController {
             if (hasConflicts) {
                 return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
             }
+            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
+            if (!dataValida) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
+            }
             reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
-            reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
-            reservaModificada.setDataAtualizacaoReserva(request.getDataAtualizacaoReserva());
+            if(request.getDataRealizacaoReserva()==null){
+                reservaModificada.setDataRealizacaoReserva();
+            }else {
+                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
+            }
+            reservaModificada.setDataAtualizacaoReserva();
             reservaModificada.setDataEntrada(request.getDataEntrada());
             reservaModificada.setDataSaida(request.getDataSaida());
             reservaModificada.setNumeroHospedes(request.getNumeroHospedes());

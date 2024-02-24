@@ -19,4 +19,11 @@ public class ReservaService {
         List<Reserva> conflitos = reservaRepository.encontraConflitosReserva(idQuarto, dataEntrada, dataSaida);
         return !conflitos.isEmpty();
     }
+    public boolean validaData(LocalDate dataEntrada, LocalDate dataSaida) {
+        LocalDate hoje = LocalDate.now();
+        if (dataEntrada.isBefore(hoje)) {
+            return false;
+        }
+        return !dataSaida.isBefore(dataEntrada);
+    }
 }

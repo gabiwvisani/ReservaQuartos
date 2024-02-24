@@ -9,13 +9,13 @@ import java.util.Optional;
 
 @Service
 public class ClienteService {
-    private static ClienteRepository clienteRepository;
+    private final ClienteRepository clienteRepository;
     @Autowired
     public ClienteService(ClienteRepository clienteRepository) {
         this.clienteRepository = clienteRepository;
     }
 
-    public static Cliente verificarDuplicidadeCpf(String cpf) {
+    public  Cliente verificarDuplicidadeCpf(String cpf) {
         Optional<Cliente> clienteExistente = clienteRepository.findByCpf(cpf);
         if (clienteExistente.isPresent()) {
             throw new IllegalArgumentException("Já existe um cliente cadastrado com este CPF.");

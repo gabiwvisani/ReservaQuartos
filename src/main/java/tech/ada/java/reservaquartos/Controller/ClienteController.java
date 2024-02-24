@@ -16,10 +16,12 @@ import java.util.Optional;
 @RestController
 public class ClienteController {
     private final ClienteRepository clienteRepository;
+    private final ClienteService clienteService;
     private final ModelMapper modelMapper;
     @Autowired
-    public ClienteController(ClienteRepository clienteRepository, ModelMapper modelMapper) {
+    public ClienteController(ClienteRepository clienteRepository,ClienteService clienteService, ModelMapper modelMapper) {
         this.clienteRepository = clienteRepository;
+        this.clienteService= clienteService;
         this.modelMapper = modelMapper;
     }
 
@@ -33,7 +35,7 @@ public class ClienteController {
         }
 
         try {
-            ClienteService.verificarDuplicidadeCpf(clienteRequest.getCpf());
+            clienteService.verificarDuplicidadeCpf(clienteRequest.getCpf());
         } catch (IllegalArgumentException ex) {
             ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
@@ -77,7 +79,7 @@ public class ClienteController {
             {
                 try
                 {
-                    ClienteService.verificarDuplicidadeCpf(request.getCpf());
+                    clienteService.verificarDuplicidadeCpf(request.getCpf());
                 } catch (IllegalArgumentException ex) {
                     ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);

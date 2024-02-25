@@ -4,6 +4,7 @@ package tech.ada.java.reservaquartos.Repository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
+import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Reserva;
 import java.time.LocalDate;
 import java.util.List;
@@ -18,4 +19,5 @@ public interface ReservaRepository extends JpaRepository<Reserva, Integer> {
             "AND r.statusConfirmada = true")
     List<Reserva> encontraConflitosReserva(Integer idQuarto, LocalDate dataEntrada, LocalDate dataSaida);
 
+    List<Reserva> findByCliente(Cliente cliente);
 }

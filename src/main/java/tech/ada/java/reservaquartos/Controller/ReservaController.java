@@ -47,12 +47,14 @@ public class ReservaController {
     public ResponseEntity<?> cadastrarQuarto(@RequestParam Integer idQuarto,
                                                    @RequestParam Integer idCliente,
                                                    @RequestBody ReservaRequest reservaRequest){
-        Quarto quarto = quartoRepository.findById(idQuarto)
-                .orElseThrow(() -> new RuntimeException("Quarto não encontrado"));
-
-        Cliente cliente = clienteRepository.findById(idCliente)
-                .orElseThrow(() -> new RuntimeException("Cliente não encontrado"));
-
+        Quarto quarto = quartoRepository.findById(idQuarto).orElse(null);
+        if (quarto == null) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quarto não encontrado");
+        }
+        Cliente cliente = clienteRepository.findById(idCliente).orElse(null);
+        if(cliente==null){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cliente não encontrado");
+        }
         LocalDate dataEntrada = reservaRequest.getDataEntrada();
         LocalDate dataSaida = reservaRequest.getDataSaida();
         boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida, null);
@@ -130,13 +132,19 @@ public class ReservaController {
                 reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
             }
             if (idQuarto != null) {
-                Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -> new RuntimeException("Quarto não encontrado"));;
+                Quarto quarto = quartoRepository.findById(idQuarto).orElse(null);
+                if (quarto == null) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Quarto não encontrado");
+                }
                 reservaModificada.setQuarto(quarto);
                 reservaModificada.setValorTotalReserva();
 
             }
             if (idCliente != null) {
-                Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));;
+                Cliente cliente = clienteRepository.findById(idCliente).orElse(null);
+                if(cliente==null){
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Cliente não encontrado");
+                }
                 reservaModificada.setCliente(cliente);
             }
             if (request.getStatusConfirmada() != null) {
@@ -153,6 +161,15 @@ public class ReservaController {
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("mensagem", "Não foi possível localizar a reserva pelo ID");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
+    @DeleteMapping("/reserva/{id}")
+    public ResponseEntity<?> deletarReserva(@PathVariable Integer id) {
+        if (reservaRepository.existsById(id)) {
+            reservaRepository.deleteById(id);
+            return ResponseEntity.ok("Reserva excluída com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva não encontrado.");
         }
     }
 //    @PutMapping("/reserva/{id}")

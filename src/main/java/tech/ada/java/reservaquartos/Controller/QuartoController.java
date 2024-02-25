@@ -93,6 +93,14 @@ public class QuartoController {
         } else {
             return ResponseEntity.notFound().build();
         }
-
+    }
+    @DeleteMapping("/quarto/{id}")
+    public ResponseEntity<?> deletarQuarto(@PathVariable Integer id){
+        if  (quartoRepository.existsById(id)){
+            quartoRepository.deleteById(id);
+            return ResponseEntity.ok("Quarto excluído com sucesso.");
+        } else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Quarto não encontrado.");
+        }
     }
 }

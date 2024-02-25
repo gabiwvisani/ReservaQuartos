@@ -6,6 +6,9 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.ada.java.reservaquartos.Domain.Cliente;
+import tech.ada.java.reservaquartos.Domain.Reserva;
+import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 import tech.ada.java.reservaquartos.Request.QuartoRequest;
 import tech.ada.java.reservaquartos.Domain.Quarto;
@@ -23,11 +26,15 @@ public class QuartoController {
     private final QuartoRepository quartoRepository;
     private final ModelMapper modelMapper;
     private final QuartoService quartoService;
+    private final ReservaRepository reservaRepository;
+    private final ReservaController reservaController;
 
     @Autowired
-    public QuartoController(QuartoRepository quartoRepository, ModelMapper modelMapper,QuartoService quartoService) {
+    public QuartoController(QuartoRepository quartoRepository,ReservaRepository reservaRepository,ReservaController reservaController, ModelMapper modelMapper,QuartoService quartoService) {
         this.quartoRepository = quartoRepository;
         this.modelMapper = modelMapper;
+        this.reservaRepository= reservaRepository;
+        this.reservaController =reservaController;
         this.quartoService = quartoService;
     }
 
@@ -94,12 +101,34 @@ public class QuartoController {
             return ResponseEntity.notFound().build();
         }
     }
+    @PutMapping("/quarto/{id}")
+    public ResponseEntity<?> atualizarQuarto(@PathVariable Integer id, @RequestBody QuartoRequest quartoRequest) {
+        Optional<Quarto> optionalQuarto = quartoRepository.findById(id);
+        if (optionalQuarto.isPresent()) {
+            Quarto quarto = optionalQuarto.get();
+            quarto.setNumeroQuarto(quartoRequest.getNumeroQuarto());
+            quarto.setCapacidadeMaximaDePessoas(quartoRequest.getCapacidadeMaximaDePessoas());
+            quarto.setPrecoPorNoite(quartoRequest.getPrecoPorNoite());
+            quarto.setDescricao(quartoRequest.getDescricao());
+            quarto.setTipoQuarto(quartoRequest.getTipoQuarto());
+            quartoRepository.save(quarto);
+            return ResponseEntity.ok(quarto);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Quarto não encontrado.");
+        }
+    }
     @DeleteMapping("/quarto/{id}")
     public ResponseEntity<?> deletarQuarto(@PathVariable Integer id){
-        if  (quartoRepository.existsById(id)){
+        Optional<Quarto> quartoOptional = quartoRepository.findById(id);
+        if (quartoOptional.isPresent()) {
+            Quarto quarto = quartoOptional.get();
+            List<Reserva> reservasDoQuarto = reservaRepository.findByQuarto(quarto);
+            for (Reserva reserva : reservasDoQuarto) {
+                reservaController.deletarReserva(reserva.getIdentificadorReserva());
+            }
             quartoRepository.deleteById(id);
             return ResponseEntity.ok("Quarto excluído com sucesso.");
-        } else{
+        } else {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Quarto não encontrado.");
         }
     }

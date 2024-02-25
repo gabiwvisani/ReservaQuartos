@@ -62,5 +62,6 @@ http://localhost:8080/quarto?precoPorNoite=230
 
 - [@fonseca-bianca](https://github.com/fonseca-bianca)
 - [@gabiwvisani](https://github.com/gabiwvisani)
+- [@irinaiwata](https://github.com/irinaiwata)
 - [@isabelkodama](https://github.com/isabelkodama)
 - [@vivianpanizzi](https://github.com/vivianpanizzi)

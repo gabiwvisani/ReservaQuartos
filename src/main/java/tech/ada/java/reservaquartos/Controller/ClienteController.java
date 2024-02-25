@@ -32,7 +32,7 @@ public class ClienteController {
     }
 
     @PostMapping("/cliente")
-    public ResponseEntity<?> cadastrarCliente(@RequestBody ClienteRequest clienteRequest) {
+    public ResponseEntity<?> cadastrarCliente(@jakarta.validation.Valid @RequestBody ClienteRequest clienteRequest) {
 
         String mensagemErro = Cliente.validarCPF(clienteRequest.getCpf());
         if (mensagemErro != null) {
@@ -73,7 +73,7 @@ public class ClienteController {
     @PatchMapping("/cliente/{id}")
     public ResponseEntity<?> alterarCliente(
             @PathVariable Integer id,
-            @RequestBody ClienteRequest request) {
+            @jakarta.validation.Valid @RequestBody ClienteRequest request) {
 
         Optional<Cliente> optionalCliente = clienteRepository.findById(id);
 

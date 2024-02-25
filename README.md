@@ -43,7 +43,9 @@ Todos os caminhos começam no localhost porta 8080
 | PATCH | /cliente/{id} | Altera as informações de um cliente por id |
 | PATCH | /quarto/{id} | Altera as informações de um quarto por id |
 | PATCH | /reservas/{id} | Altera as informações de uma reserva por id |
+| PUT | /quarto/{id} | Altera todas a informações de um quarto por id |
 | PUT | /reservas/{id} | Altera todas a informações de uma reserva por id |
+| DELETE | /quarto/{id} | Deleta um quarto pelo id e as reservas atreladas a ele|
 
 
 #### Filtros

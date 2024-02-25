@@ -5,6 +5,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tech.ada.java.reservaquartos.Domain.Reserva;
+import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
@@ -17,11 +19,15 @@ import java.util.Optional;
 public class ClienteController {
     private final ClienteRepository clienteRepository;
     private final ClienteService clienteService;
+    private final ReservaRepository reservaRepository;
+    private final ReservaController reservaController;
     private final ModelMapper modelMapper;
     @Autowired
-    public ClienteController(ClienteRepository clienteRepository,ClienteService clienteService, ModelMapper modelMapper) {
+    public ClienteController(ClienteRepository clienteRepository,ClienteService clienteService,ReservaRepository reservaRepository,ReservaController reservaController, ModelMapper modelMapper) {
         this.clienteRepository = clienteRepository;
         this.clienteService= clienteService;
+        this.reservaRepository= reservaRepository;
+        this.reservaController =reservaController;
         this.modelMapper = modelMapper;
     }
 
@@ -110,6 +116,21 @@ public class ClienteController {
         } else {
             ErrorResponse errorResponse = new ErrorResponse("Não foi localizado um cliente com este ID.");
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+    }
+    @DeleteMapping("/cliente/{id}")
+    public ResponseEntity<?> deletarCliente(@PathVariable Integer id) {
+        Optional<Cliente> clienteOptional = clienteRepository.findById(id);
+        if (clienteOptional.isPresent()) {
+            Cliente cliente = clienteOptional.get();
+            List<Reserva> reservasDoCliente = reservaRepository.findByCliente(cliente);
+            for (Reserva reserva : reservasDoCliente) {
+                reservaController.deletarReserva(reserva.getIdentificadorReserva());
+            }
+            clienteRepository.deleteById(id);
+            return ResponseEntity.ok("Cliente excluído com sucesso.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cliente não encontrado.");
         }
     }
 

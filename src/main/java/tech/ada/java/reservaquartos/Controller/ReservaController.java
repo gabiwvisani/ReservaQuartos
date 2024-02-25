@@ -55,7 +55,7 @@ public class ReservaController {
 
         LocalDate dataEntrada = reservaRequest.getDataEntrada();
         LocalDate dataSaida = reservaRequest.getDataSaida();
-        boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida);
+        boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida, null);
         boolean dataValida = reservaService.validaData(dataEntrada, dataSaida);
         if (!hasConflicts) {
             if(dataValida) {
@@ -108,16 +108,15 @@ public class ReservaController {
 
         if(optionalReserva.isPresent()){
             Reserva reservaModificada = optionalReserva.get();
-            boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida());
-            if (hasConflicts) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
-            }
-            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
-            if (!dataValida) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
-            }
-            if (request.getIdentificadorReserva() != null) {
-                reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
+            if (request.getDataEntrada() != null ||request.getDataSaida() != null) {
+                boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada()!= null ?request.getDataEntrada():reservaModificada.getDataEntrada(), request.getDataSaida()!= null ?request.getDataSaida():reservaModificada.getDataSaida(),reservaModificada);
+                if (hasConflicts) {
+                    return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
+                }
+                boolean dataValida = reservaService.validaData(request.getDataEntrada()!= null ?request.getDataEntrada():reservaModificada.getDataEntrada(), request.getDataSaida()!= null ?request.getDataSaida():reservaModificada.getDataSaida());
+                if (!dataValida) {
+                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
+                }
             }
             if (request.getDataEntrada() != null) {
                 reservaModificada.setDataEntrada(request.getDataEntrada());
@@ -143,6 +142,9 @@ public class ReservaController {
             if (request.getStatusConfirmada() != null) {
                 reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
             }
+            if (request.getFormaPagamento() != null) {
+                reservaModificada.setFormaPagamento(request.getFormaPagamento());
+            }
             reservaModificada.setDataAtualizacaoReserva();
             Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
             return ResponseEntity.ok(reservaAtualizada);
@@ -153,47 +155,47 @@ public class ReservaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
         }
     }
-    @PutMapping("/reserva/{id}")
-    public ResponseEntity<?> alterarTudoReserva(
-            @PathVariable Integer id,
-            @RequestParam Integer idQuarto,
-            @RequestParam Integer idCliente,
-            @RequestBody ReservaRequest request){
-
-        Optional<Reserva> optionalReserva = reservaRepository.findById(id);
-
-        if(optionalReserva.isPresent()){
-            Reserva reservaModificada = optionalReserva.get();
-            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida());
-            if (hasConflicts) {
-                return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
-            }
-            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
-            if (!dataValida) {
-                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
-            }
-            reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
-            if(request.getDataRealizacaoReserva()==null){
-                reservaModificada.setDataRealizacaoReserva();
-            }else {
-                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
-            }
-            reservaModificada.setDataAtualizacaoReserva();
-            reservaModificada.setDataEntrada(request.getDataEntrada());
-            reservaModificada.setDataSaida(request.getDataSaida());
-            reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
-            Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -> new RuntimeException("Quarto não encontrado"));;
-            reservaModificada.setQuarto(quarto);
-            reservaModificada.setValorTotalReserva();
-            Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));;
-            reservaModificada.setCliente(cliente);
-            reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
-            Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
-            return ResponseEntity.ok(reservaAtualizada);
-        } else {
-            Map<String, String> errorResponse = new HashMap<>();
-            errorResponse.put("mensagem", "Não foi possível localizar a reserva pelo ID");
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-        }
-    }
+//    @PutMapping("/reserva/{id}")
+//    public ResponseEntity<?> alterarTudoReserva(
+//            @PathVariable Integer id,
+//            @RequestParam Integer idQuarto,
+//            @RequestParam Integer idCliente,
+//            @RequestBody ReservaRequest request){
+//
+//        Optional<Reserva> optionalReserva = reservaRepository.findById(id);
+//
+//        if(optionalReserva.isPresent()){
+//            Reserva reservaModificada = optionalReserva.get();
+//            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida(),reservaModificada);
+//            if (hasConflicts) {
+//                return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
+//            }
+//            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
+//            if (!dataValida) {
+//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
+//            }
+//            reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
+//            if(request.getDataRealizacaoReserva()==null){
+//                reservaModificada.setDataRealizacaoReserva();
+//            }else {
+//                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
+//            }
+//            reservaModificada.setDataAtualizacaoReserva();
+//            reservaModificada.setDataEntrada(request.getDataEntrada());
+//            reservaModificada.setDataSaida(request.getDataSaida());
+//            reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
+//            Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -> new RuntimeException("Quarto não encontrado"));;
+//            reservaModificada.setQuarto(quarto);
+//            reservaModificada.setValorTotalReserva();
+//            Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));;
+//            reservaModificada.setCliente(cliente);
+//            reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
+//            Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
+//            return ResponseEntity.ok(reservaAtualizada);
+//        } else {
+//            Map<String, String> errorResponse = new HashMap<>();
+//            errorResponse.put("mensagem", "Não foi possível localizar a reserva pelo ID");
+//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+//        }
+//    }
 }

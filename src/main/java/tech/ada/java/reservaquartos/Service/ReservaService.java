@@ -15,8 +15,11 @@ public class ReservaService {
         this.reservaRepository = reservaRepository;
     }
 
-    public boolean verificaConflitosReserva(Integer idQuarto, LocalDate dataEntrada, LocalDate dataSaida) {
+    public boolean verificaConflitosReserva(Integer idQuarto, LocalDate dataEntrada, LocalDate dataSaida, Reserva reserva) {
         List<Reserva> conflitos = reservaRepository.encontraConflitosReserva(idQuarto, dataEntrada, dataSaida);
+        if(reserva !=null) {
+            conflitos.remove(reserva);
+        }
         return !conflitos.isEmpty();
     }
     public boolean validaData(LocalDate dataEntrada, LocalDate dataSaida) {

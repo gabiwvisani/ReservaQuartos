@@ -2,6 +2,7 @@ package tech.ada.java.reservaquartos.Controller;
 
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -9,8 +10,10 @@ import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 import tech.ada.java.reservaquartos.Request.QuartoRequest;
 import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
+import tech.ada.java.reservaquartos.Service.QuartoService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -19,11 +22,13 @@ public class QuartoController {
 
     private final QuartoRepository quartoRepository;
     private final ModelMapper modelMapper;
+    private final QuartoService quartoService;
 
     @Autowired
-    public QuartoController(QuartoRepository quartoRepository, ModelMapper modelMapper) {
+    public QuartoController(QuartoRepository quartoRepository, ModelMapper modelMapper,QuartoService quartoService) {
         this.quartoRepository = quartoRepository;
         this.modelMapper = modelMapper;
+        this.quartoService = quartoService;
     }
 
     @PostMapping("/quarto")
@@ -64,6 +69,14 @@ public class QuartoController {
     @GetMapping(value = "/quarto", params = {"precoPorNoite"})
     public List<Quarto> buscarPorPrecoPorNoite(@RequestParam String precoPorNoite){
         return quartoRepository.findByPrecoPorNoite(BigDecimal.valueOf(Long.parseLong(precoPorNoite)));
+    }
+    @GetMapping("/disponiveis")
+    public ResponseEntity<List<Quarto>> getQuartosDisponiveis(
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataEntrada,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataSaida) {
+
+        List<Quarto> quartosDisponiveis = quartoService.buscarQuartosDisponiveis(dataEntrada, dataSaida);
+        return ResponseEntity.ok(quartosDisponiveis);
     }
     @PatchMapping("/quarto/{id}")
     public ResponseEntity<Quarto> alterarValorQuarto(

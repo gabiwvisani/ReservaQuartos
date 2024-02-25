@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Quarto;
+import tech.ada.java.reservaquartos.Domain.Reserva;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -21,9 +22,6 @@ public class ReservaRequest {
     private Cliente cliente;
     private  Boolean statusConfirmada;
     private  BigDecimal valorTotalReserva;
-    private FormaPagamento formaPagamento;
+    private Reserva.FormaPagamento formaPagamento;
 
-    public enum FormaPagamento {
-        CARTAO_DE_CREDITO, DINHEIRO, PIX
-    }
 }

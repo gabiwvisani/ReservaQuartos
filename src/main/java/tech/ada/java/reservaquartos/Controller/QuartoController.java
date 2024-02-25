@@ -75,7 +75,6 @@ public class QuartoController {
         if (optionalQuarto.isPresent()) {
             Quarto quartoModificado = optionalQuarto.get();
             if (request.precoPorNoite() != null) quartoModificado.setPrecoPorNoite(request.precoPorNoite());
-
             Quarto quartoSalvo = quartoRepository.save(quartoModificado);
             return ResponseEntity.ok(quartoSalvo);
         } else {

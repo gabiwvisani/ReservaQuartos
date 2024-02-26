@@ -140,6 +140,12 @@ Ao excluir um quarto ou um cliente do sistema, todas as reservas associadas a el
 ### Atualização de Reservas
 Ao alterar uma reserva, o sistema verifica se há conflitos com outras reservas para o mesmo quarto nas novas datas especificadas. Além disso, valida se as datas fornecidas são consistentes e dentro dos limites permitidos.
 
+---
+## Segurança
+
+O sistema também conta com a dependência spring-boot-starter-security, que foi configurada com as credenciais de login usuarioquarto e senha 12345. No entanto, não é necessário inserir essas credenciais para autenticação básica ao acessar a rota: http://localhost:8080/quarto. Isso porque essa rota pode ser posteriormente utilizada em um site, permitindo que o público geral do hotel verifique os quartos disponíveis sem a necessidade de autenticação.
+
+---
 ## Autores
 
 - [@fonseca-bianca](https://github.com/fonseca-bianca)

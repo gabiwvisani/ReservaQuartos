@@ -10,6 +10,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -21,9 +22,13 @@ import tech.ada.java.reservaquartos.Service.ClienteService;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
+
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.when;
+
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
@@ -39,30 +44,42 @@ class ClienteControllerTest {
     @InjectMocks
     private ClienteController clienteController;
     private MockMvc mockMvc;
-
     List<Cliente> clientes;
-    @BeforeEach
 
-            public void setup(){
-        Cliente cliente1 = new Cliente(
-                "Maria Silva",
-                "12545458954",
-                "27150-574",
-                "Rua Prefeito Alguma Coisa",
-                "(52) 99885-4612",
-                "mariasilva@gmail.com");
+    Cliente cliente1;
+    Cliente cliente2;
+    Optional<Cliente> clienteOptional1;
+    Optional<Cliente> clienteOptional2;
 
-        Cliente cliente2 = new Cliente(
-                "João Souza",
-                "987654321",
-                "27150-123",
-                "Rua dos Testes",
-                "(52) 12345-6789",
-                "joaosouza@gmail.com");
+
+
+        @BeforeEach
+        public void setup(){
+
+            cliente1 = new Cliente(
+                    "Maria Silva",
+                    "12545458954",
+                    "27150-574",
+                    "Rua Prefeito Alguma Coisa",
+                    "(52) 99885-4612",
+                    "mariasilva@gmail.com");
+
+            cliente2 = new Cliente(
+                    "João Souza",
+                    "98765432100",
+                    "27150-123",
+                    "Rua dos Testes",
+                    "(52) 12345-6789",
+                    "joaosouza@gmail.com");
+
+            clienteOptional1 = Optional.of(cliente1);
+            clienteOptional2 = Optional.of(cliente2);
 
         clientes = Arrays.asList(cliente1, cliente2);
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
+
     }
+
 
 
     public static String asJsonString(final Object obj){
@@ -77,13 +94,24 @@ class ClienteControllerTest {
     public void buscarTodosClientesTest() throws Exception {
 
         //Preparar
-        when(clienteController.buscarTodosClientes()).thenReturn(clientes);
+        when(clienteRepository.findAll()).thenReturn(clientes);
 
         //Ação
         mockMvc.perform(MockMvcRequestBuilders.get("/cliente").
                 contentType(MediaType.APPLICATION_JSON)).
-                andExpect(status().isOk());
-
-
+                andExpect(content().json(asJsonString(clientes)));
+        verify(clienteRepository,times(1)).findAll();
     }
+
+    @Test
+    public void buscarClientePorCPFTest() throws Exception {
+        when(clienteRepository.findByCpf("12545458954")).thenReturn(clienteOptional1);
+        mockMvc.perform(MockMvcRequestBuilders.get("/cliente/{cpf}", "12545458954").
+                contentType(MediaType.APPLICATION_JSON)).
+                andExpect(status().isOk());
+        verify(clienteRepository,times(1)).findByCpf("12545458954");
+    }
+
+
+
 }

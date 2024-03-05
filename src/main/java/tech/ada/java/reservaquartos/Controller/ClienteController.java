@@ -53,10 +53,14 @@ public class ClienteController {
     }
 
     @GetMapping("/cliente")
-    public List<Cliente> buscarTodosClientes() {
+    public ResponseEntity<?> buscarTodosClientes() {
         List<Cliente> listaTodosClientes = clienteRepository.findAll();
-        return listaTodosClientes;
-    }
+        if (listaTodosClientes.isEmpty()) {
+            ErrorResponse errorResponse = new ErrorResponse("A lista de clientes está vazia");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
+        }
+        return ResponseEntity.ok(listaTodosClientes);
+      }
 
     @GetMapping("/cliente/{cpf}")
     public ResponseEntity<?> buscarClientePorCPF(@PathVariable String cpf) {

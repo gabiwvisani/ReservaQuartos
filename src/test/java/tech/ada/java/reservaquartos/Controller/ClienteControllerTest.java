@@ -113,5 +113,13 @@ class ClienteControllerTest {
     }
 
 
+    @Test
+    public void validarCPFTest(){
+        assertEquals(Cliente.validarCPF(cliente1.getCpf()), null);
+    }
 
+    @Test
+    public void validarCPFTest2(){
+        assertEquals(Cliente.validarCPF("152125"), "O CPF deve conter exatamente 11 dígitos numéricos.");
+    }
 }

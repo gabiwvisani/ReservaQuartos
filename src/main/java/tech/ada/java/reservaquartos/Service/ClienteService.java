@@ -15,7 +15,7 @@ public class ClienteService {
         this.clienteRepository = clienteRepository;
     }
 
-    public  Cliente verificarDuplicidadeCpf(String cpf) {
+    public Cliente verificarDuplicidadeCpf(String cpf) {
         Optional<Cliente> clienteExistente = clienteRepository.findByCpf(cpf);
         if (clienteExistente.isPresent()) {
             throw new IllegalArgumentException("Já existe um cliente cadastrado com este CPF.");

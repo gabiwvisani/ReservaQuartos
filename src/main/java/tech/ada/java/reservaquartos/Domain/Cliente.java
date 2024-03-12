@@ -35,7 +35,7 @@ public class Cliente {
         this.email = email;
     }
 
-    public static String validarCPF(String cpf) {
+    public  String validarCPF(String cpf) {
         if (cpf == null || cpf.length() != 11 || !cpf.chars().allMatch(Character::isDigit)) {
             return "O CPF deve conter exatamente 11 dígitos numéricos.";
         }

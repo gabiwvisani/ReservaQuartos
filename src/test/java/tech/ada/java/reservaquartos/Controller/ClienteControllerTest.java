@@ -36,7 +36,9 @@ class ClienteControllerTest {
 
     @Mock
     private ClienteRepository clienteRepository;
-//    private ClienteService clienteService;
+
+    @InjectMocks
+    private ClienteService clienteService;
 //    private ReservaRepository reservaRepository;
 //    private ReservaController reservaController;
 //    private ModelMapper modelMapper;
@@ -115,11 +117,31 @@ class ClienteControllerTest {
 
     @Test
     public void validarCPFTest(){
-        assertEquals(Cliente.validarCPF(cliente1.getCpf()), null);
+        assertEquals(cliente1.validarCPF(cliente1.getCpf()), null);
     }
 
     @Test
     public void validarCPFTest2(){
-        assertEquals(Cliente.validarCPF("152125"), "O CPF deve conter exatamente 11 dígitos numéricos.");
+        assertEquals(cliente1.validarCPF("152125"), "O CPF deve conter exatamente 11 dígitos numéricos.");
+    }
+
+    @Test
+    public void verificarDuplicidadeCpfTeste(){
+        when(clienteRepository.findByCpf(cliente1.getCpf())).thenReturn(Optional.of(cliente1));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            clienteService.verificarDuplicidadeCpf(cliente1.getCpf());
+        });
+        assertEquals("Já existe um cliente cadastrado com este CPF.", exception.getMessage());
+        verify(clienteRepository, times(1)).findByCpf(cliente1.getCpf());
+    }
+
+    @Test
+    public void verificarDuplicidadeCpfTeste2(){
+        when(clienteRepository.findByCpf(cliente2.getCpf())).thenReturn(Optional.of(cliente1));
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            clienteService.verificarDuplicidadeCpf(cliente2.getCpf());
+        });
+        assertEquals("Já existe um cliente cadastrado com este CPF.", exception.getMessage());
+        verify(clienteRepository, times(1)).findByCpf(cliente1.getCpf());
     }
 }

@@ -96,6 +96,22 @@ public class QuartoControllerTest {
         verify(quartoRepository, times(1)).findByCapacidadeMaximaDePessoas(capacidadeMaxima);
     }
 
+    @Test
+    public void buscarPorPrecoPorNoiteTest() throws Exception {
+
+        BigDecimal precoPorNoite = new BigDecimal("400");
+
+        List<Quarto> quartosMockados = Arrays.asList(quarto1);
+        when(quartoRepository.findByPrecoPorNoite(precoPorNoite)).thenReturn(quartosMockados);
+
+        mockMvc.perform(get("/quarto")
+                        .param("precoPorNoite", String.valueOf(precoPorNoite)))
+                .andExpect(status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)));  // Verifica se a lista retornada possui 1 item
+
+        verify(quartoRepository, times(1)).findByPrecoPorNoite(precoPorNoite);
+    }
+
     }
 
 

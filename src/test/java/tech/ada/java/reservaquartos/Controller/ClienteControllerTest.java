@@ -12,7 +12,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import tech.ada.java.reservaquartos.Domain.Cliente;
+import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
 import tech.ada.java.reservaquartos.Service.ClienteService;
 

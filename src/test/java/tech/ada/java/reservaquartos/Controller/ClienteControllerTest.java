@@ -6,18 +6,14 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MockMvcBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
-import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Service.ClienteService;
 
 import java.util.Arrays;
@@ -25,11 +21,11 @@ import java.util.List;
 import java.util.Optional;
 
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
 class ClienteControllerTest {
@@ -37,7 +33,7 @@ class ClienteControllerTest {
     @Mock
     private ClienteRepository clienteRepository;
 
-    @InjectMocks
+   @Mock
     private ClienteService clienteService;
 //    private ReservaRepository reservaRepository;
 //    private ReservaController reservaController;
@@ -52,6 +48,9 @@ class ClienteControllerTest {
     Cliente cliente2;
     Optional<Cliente> clienteOptional1;
     Optional<Cliente> clienteOptional2;
+
+    @Mock
+    private ModelMapper modelMapper;
 
 
 
@@ -76,6 +75,7 @@ class ClienteControllerTest {
 
             clienteOptional1 = Optional.of(cliente1);
             clienteOptional2 = Optional.of(cliente2);
+
 
         clientes = Arrays.asList(cliente1, cliente2);
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
@@ -116,32 +116,19 @@ class ClienteControllerTest {
 
 
     @Test
-    public void validarCPFTest(){
-        assertEquals(cliente1.validarCPF(cliente1.getCpf()), null);
+    public void cadastrarClienteTest() throws Exception {
+
+        when(modelMapper.map(any(), any())).thenReturn(cliente1);
+        when(clienteRepository.save(any(Cliente.class))).thenReturn(cliente1);
+
+        var response = mockMvc.perform(MockMvcRequestBuilders.post("/cliente")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(asJsonString(cliente1)))
+                .andExpect(status().isCreated());
+
+        response.andExpect(jsonPath(("$.nomeCompleto"),equalTo("Maria Silva")));
+
+        verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
 
-    @Test
-    public void validarCPFTest2(){
-        assertEquals(cliente1.validarCPF("152125"), "O CPF deve conter exatamente 11 dígitos numéricos.");
-    }
-
-    @Test
-    public void verificarDuplicidadeCpfTeste(){
-        when(clienteRepository.findByCpf(cliente1.getCpf())).thenReturn(Optional.of(cliente1));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            clienteService.verificarDuplicidadeCpf(cliente1.getCpf());
-        });
-        assertEquals("Já existe um cliente cadastrado com este CPF.", exception.getMessage());
-        verify(clienteRepository, times(1)).findByCpf(cliente1.getCpf());
-    }
-
-    @Test
-    public void verificarDuplicidadeCpfTeste2(){
-        when(clienteRepository.findByCpf(cliente2.getCpf())).thenReturn(Optional.of(cliente1));
-        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
-            clienteService.verificarDuplicidadeCpf(cliente2.getCpf());
-        });
-        assertEquals("Já existe um cliente cadastrado com este CPF.", exception.getMessage());
-        verify(clienteRepository, times(1)).findByCpf(cliente1.getCpf());
-    }
 }

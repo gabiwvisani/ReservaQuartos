@@ -76,7 +76,6 @@ class ClienteControllerTest {
             clienteOptional1 = Optional.of(cliente1);
             clienteOptional2 = Optional.of(cliente2);
 
-
         clientes = Arrays.asList(cliente1, cliente2);
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
 

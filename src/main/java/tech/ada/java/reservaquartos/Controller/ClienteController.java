@@ -19,24 +19,24 @@ import java.util.Optional;
 public class ClienteController {
     private final ClienteRepository clienteRepository;
     private final ClienteService clienteService;
-    private final Cliente cliente;
+   // private final Cliente cliente;
     private final ReservaRepository reservaRepository;
     private final ReservaController reservaController;
     private final ModelMapper modelMapper;
     @Autowired
-    public ClienteController(ClienteRepository clienteRepository,ClienteService clienteService,ReservaRepository reservaRepository,ReservaController reservaController, ModelMapper modelMapper, Cliente cliente) {
+    public ClienteController(ClienteRepository clienteRepository,ClienteService clienteService,ReservaRepository reservaRepository,ReservaController reservaController, ModelMapper modelMapper) {
         this.clienteRepository = clienteRepository;
         this.clienteService= clienteService;
         this.reservaRepository= reservaRepository;
         this.reservaController =reservaController;
         this.modelMapper = modelMapper;
-        this.cliente = cliente;
+       // this.cliente = cliente;
     }
 
     @PostMapping("/cliente")
     public ResponseEntity<?> cadastrarCliente(@jakarta.validation.Valid @RequestBody ClienteRequest clienteRequest) {
 
-        String mensagemErro = cliente.validarCPF(clienteRequest.getCpf());
+        String mensagemErro = Cliente.validarCPF(clienteRequest.getCpf());
         if (mensagemErro != null) {
             ErrorResponse errorResponse = new ErrorResponse(mensagemErro);
             return ResponseEntity.badRequest().body(errorResponse);
@@ -100,7 +100,7 @@ public class ClienteController {
                     return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
                 }
 
-                String mensagemErro = cliente.validarCPF(request.getCpf());
+                String mensagemErro = Cliente.validarCPF(request.getCpf());
                 if (mensagemErro != null)
                 {
                     ErrorResponse errorResponse = new ErrorResponse(mensagemErro);

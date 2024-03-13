@@ -64,12 +64,18 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void buscarQuartoPorID() throws Exception {
-        when(quartoRepository.findById(1)).thenReturn(optionalQuarto);
-        mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1).
-                        contentType(MediaType.APPLICATION_JSON)).
-                andExpect(status().isOk());
-        verify(quartoRepository,times(1)).findById(1);
+    public void buscarQuartoPorIDTest1() throws Exception {
+        when(quartoRepository.findById(anyInt())).thenReturn(optionalQuarto);
+        mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+    }
+    @Test
+    public void buscarQuartoPorIDTest2() throws Exception {
+        when(quartoRepository.findById(anyInt())).thenReturn(Optional.empty());
+        mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound());
     }
 
     @Test

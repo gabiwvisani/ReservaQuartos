@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -21,6 +22,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -75,6 +77,23 @@ public class QuartoControllerTest {
         when(quartoRepository.findByTipoQuarto(Quarto.TipoQuarto.valueOf("SUPERIOR"))).thenReturn(quartos);
         mockMvc.perform(get("/quarto").param("tipoQuarto", tipoQuarto))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    public void buscarPorCapacidadeMaximaTest() throws Exception {
+
+        int capacidadeMaxima = 3;
+
+        List<Quarto> quartosMockados = Arrays.asList(quarto1);
+        when(quartoRepository.findByCapacidadeMaximaDePessoas(capacidadeMaxima)).thenReturn(quartosMockados);
+
+        //Realizando requisição pro endpoint
+        mockMvc.perform(get("/quarto")
+                        .param("capacidadeMaximaDePessoas", String.valueOf(capacidadeMaxima)))
+                .andExpect(status().isOk());
+
+        //Verificando se o método do repositório foi chamado ao menos 1 vez
+        verify(quartoRepository, times(1)).findByCapacidadeMaximaDePessoas(capacidadeMaxima);
     }
 
     }

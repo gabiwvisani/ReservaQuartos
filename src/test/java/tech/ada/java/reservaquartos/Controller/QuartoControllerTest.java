@@ -22,6 +22,7 @@ import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 
 import org.springframework.test.web.servlet.MvcResult;
 import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
+import tech.ada.java.reservaquartos.Request.QuartoRequest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -38,6 +39,7 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static tech.ada.java.reservaquartos.Controller.ClienteControllerTest.asJsonString;
 
 @ExtendWith(MockitoExtension.class)
 public class QuartoControllerTest {
@@ -190,6 +192,33 @@ public class QuartoControllerTest {
         ResponseEntity<Quarto> responseEntity = quartoController.alterarValorQuarto(quartoId, request);
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
+    public void atualizarQuartoTest() {
+        QuartoRequest quartoRequest = new QuartoRequest();
+        quartoRequest.setNumeroQuarto(1);
+        quartoRequest.setCapacidadeMaximaDePessoas(2);
+        quartoRequest.setPrecoPorNoite(new BigDecimal("500"));
+        quartoRequest.setDescricao("Quarto teste");
+        quartoRequest.setTipoQuarto(Quarto.TipoQuarto.SUPERIOR);
+
+        Quarto quartoExistente = new Quarto(1, 2, "Quarto teste", new BigDecimal("300"), Quarto.TipoQuarto.SUPERIOR);
+
+        Optional<Quarto> optionalQuarto = Optional.of(quartoExistente);
+
+        when(quartoRepository.findById(anyInt())).thenReturn(optionalQuarto);
+        when(quartoRepository.save(any(Quarto.class))).thenReturn(quartoExistente);
+
+        ResponseEntity<?> responseEntity = quartoController.atualizarQuarto(1, quartoRequest);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(quartoExistente, responseEntity.getBody());
+        assertEquals(quartoRequest.getNumeroQuarto(), quartoExistente.getNumeroQuarto());
+        assertEquals(quartoRequest.getCapacidadeMaximaDePessoas(), quartoExistente.getCapacidadeMaximaDePessoas());
+        assertEquals(quartoRequest.getPrecoPorNoite(), quartoExistente.getPrecoPorNoite());
+        assertEquals(quartoRequest.getDescricao(), quartoExistente.getDescricao());
+        assertEquals(quartoRequest.getTipoQuarto(), quartoExistente.getTipoQuarto());
     }
 }
 

@@ -7,7 +7,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultMatcher;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -17,13 +19,19 @@ import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 
+import org.springframework.test.web.servlet.MvcResult;
+
 import java.math.BigDecimal;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.hamcrest.Matchers.hasSize;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
@@ -102,6 +110,30 @@ public class QuartoControllerTest {
         verify(quartoRepository, times(1)).findByCapacidadeMaximaDePessoas(capacidadeMaxima);
     }
 
+
+    @Test
+    public void buscarPorCapacidadeMaximaTest2() throws Exception {
+
+        int capacidadeMaxima = 3;
+
+        //Alterando a capacidade máxima retornada pelo mock
+        List<Quarto> quartosMockados = Arrays.asList(quarto2); // Quarto 2 tem capacidade 2
+        when(quartoRepository.findByCapacidadeMaximaDePessoas(capacidadeMaxima)).thenReturn(quartosMockados);
+
+        MvcResult result = mockMvc.perform(get("/quarto")
+                        .param("capacidadeMaximaDePessoas", String.valueOf(capacidadeMaxima)))
+                .andReturn();
+
+        verify(quartoRepository, times(1)).findByCapacidadeMaximaDePessoas(capacidadeMaxima);
+
+        //Verificando se a resposta contém quartos com capacidade maior que a capacidade máxima
+        String responseContent = result.getResponse().getContentAsString();
+        assertFalse(responseContent.contains("\"capacidadeMaximaDePessoas\":3"));
+    }
+
+
+
+
     @Test
     public void buscarPorPrecoPorNoiteTest() throws Exception {
 
@@ -118,6 +150,6 @@ public class QuartoControllerTest {
         verify(quartoRepository, times(1)).findByPrecoPorNoite(precoPorNoite);
     }
 
-    }
+}
 
 

@@ -83,6 +83,7 @@ public class QuartoControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
+        verify(quartoRepository, times(1)).findById(anyInt());
     }
     @Test
     public void buscarQuartoPorIDTest2() throws Exception {
@@ -90,6 +91,7 @@ public class QuartoControllerTest {
         mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
+        verify(quartoRepository, times(1)).findById(anyInt());
     }
 
     @Test

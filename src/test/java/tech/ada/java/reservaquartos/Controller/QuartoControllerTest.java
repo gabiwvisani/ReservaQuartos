@@ -99,7 +99,6 @@ public class QuartoControllerTest {
 
     @Test
     public void buscarPorCapacidadeMaximaTest() throws Exception {
-
         int capacidadeMaxima = 3;
 
         List<Quarto> quartosMockados = Arrays.asList(quarto1);
@@ -117,7 +116,6 @@ public class QuartoControllerTest {
 
     @Test
     public void buscarPorCapacidadeMaximaTest2() throws Exception {
-
         int capacidadeMaxima = 3;
 
         //Alterando a capacidade máxima retornada pelo mock
@@ -137,7 +135,6 @@ public class QuartoControllerTest {
 
     @Test
     public void buscarPorPrecoPorNoiteTest() throws Exception {
-
         BigDecimal precoPorNoite = new BigDecimal("400");
 
         List<Quarto> quartosMockados = Arrays.asList(quarto1);
@@ -181,6 +178,19 @@ public class QuartoControllerTest {
         assertEquals(novoPrecoPorNoite, responseEntity.getBody().getPrecoPorNoite());
     }
 
+    @Test
+    public void alterarValorQuartoTest2() throws Exception {
+        int quartoId = 1;
+        BigDecimal novoPrecoPorNoite = new BigDecimal("500");
+        AlteraValorQuartoRequest request = new AlteraValorQuartoRequest(novoPrecoPorNoite);
+
+        Optional<Quarto> optionalQuarto = Optional.empty();
+        when(quartoRepository.findById(quartoId)).thenReturn(optionalQuarto);
+
+        ResponseEntity<Quarto> responseEntity = quartoController.alterarValorQuarto(quartoId, request);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
 }
 
 

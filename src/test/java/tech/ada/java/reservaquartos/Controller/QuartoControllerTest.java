@@ -21,6 +21,7 @@ import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 
 import org.springframework.test.web.servlet.MvcResult;
+import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 
 import java.math.BigDecimal;
 import java.util.Arrays;
@@ -163,8 +164,22 @@ public class QuartoControllerTest {
         verify(quartoRepository, times(1)).findByPrecoPorNoite(precoPorNoite);
     }
 
+    @Test
+    public void alterarValorQuartoTest() throws Exception {
+        int quartoId = 1;
+        BigDecimal novoPrecoPorNoite = new BigDecimal("500");
+        AlteraValorQuartoRequest request = new AlteraValorQuartoRequest(novoPrecoPorNoite);
+        Quarto quarto = new Quarto(1, 2, "Quarto de teste", new BigDecimal("300"), Quarto.TipoQuarto.SUPERIOR);
+        Optional<Quarto> optionalQuarto = Optional.of(quarto);
 
+        when(quartoRepository.findById(quartoId)).thenReturn(optionalQuarto);
+        when(quartoRepository.save(quarto)).thenReturn(quarto);
 
+        ResponseEntity<Quarto> responseEntity = quartoController.alterarValorQuarto(quartoId, request);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(novoPrecoPorNoite, responseEntity.getBody().getPrecoPorNoite());
+    }
 
 }
 

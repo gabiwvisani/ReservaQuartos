@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,8 +28,10 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
+import static javax.management.Query.or;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.Conversions.oneOf;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
@@ -142,7 +145,7 @@ public class QuartoControllerTest {
         mockMvc.perform(get("/quarto")
                         .param("precoPorNoite", String.valueOf(precoPorNoite)))
                 .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)));  // Verifica se a lista retornada possui 1 item
+                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(1)));
 
         verify(quartoRepository, times(1)).findByPrecoPorNoite(precoPorNoite);
     }
@@ -151,20 +154,17 @@ public class QuartoControllerTest {
     public void buscarPorPrecoPorNoiteTest_2() throws Exception{
         BigDecimal precoPorNoite = new BigDecimal("400");
 
-        //Criando um segundo quarto com o mesmo preço por noite
-        Quarto quarto2 = new Quarto(precoPorNoite);
-
-        //Retornando uma lista com mais de um item
-        List<Quarto> quartosMockados = Arrays.asList(quarto1, quarto2);
-        when(quartoRepository.findByPrecoPorNoite(precoPorNoite)).thenReturn(quartosMockados);
+        when(quartoRepository.findByPrecoPorNoite(precoPorNoite)).thenReturn(Collections.emptyList());
 
         mockMvc.perform(get("/quarto")
                         .param("precoPorNoite", String.valueOf(precoPorNoite)))
-                .andExpect(status().isOk())
-                .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(2)));
+                .andExpect(status().isNotFound());
 
         verify(quartoRepository, times(1)).findByPrecoPorNoite(precoPorNoite);
     }
+
+
+
 
 }
 

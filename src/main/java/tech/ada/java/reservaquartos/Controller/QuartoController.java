@@ -73,10 +73,21 @@ public class QuartoController {
         return quartoRepository.findByCapacidadeMaximaDePessoas(Integer.valueOf(capacidadeMaximaDePessoas));
     }
 
+//    @GetMapping(value = "/quarto", params = {"precoPorNoite"})
+//    public List<Quarto> buscarPorPrecoPorNoite(@RequestParam String precoPorNoite){
+//        return quartoRepository.findByPrecoPorNoite(BigDecimal.valueOf(Long.parseLong(precoPorNoite)));
+//    }
+
     @GetMapping(value = "/quarto", params = {"precoPorNoite"})
-    public List<Quarto> buscarPorPrecoPorNoite(@RequestParam String precoPorNoite){
-        return quartoRepository.findByPrecoPorNoite(BigDecimal.valueOf(Long.parseLong(precoPorNoite)));
+    public ResponseEntity<List<Quarto>> buscarPorPrecoPorNoite(@RequestParam String precoPorNoite){
+        List<Quarto> quartos = quartoRepository.findByPrecoPorNoite(BigDecimal.valueOf(Long.parseLong(precoPorNoite)));
+        if (quartos.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(quartos, HttpStatus.OK);
+        }
     }
+
     @GetMapping("/disponiveis")
     public ResponseEntity<List<Quarto>> getQuartosDisponiveis(
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataEntrada,

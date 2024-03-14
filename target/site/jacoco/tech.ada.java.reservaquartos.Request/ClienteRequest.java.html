@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteRequest.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReservaQuartos</a> &gt; <a href="index.source.html" class="el_package">tech.ada.java.reservaquartos.Request</a> &gt; <span class="el_source">ClienteRequest.java</span></div><h1>ClienteRequest.java</h1><pre class="source lang-java linenums">package tech.ada.java.reservaquartos.Request;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import lombok.Getter;
+import lombok.Setter;
+import org.springframework.validation.annotation.Validated;
+
+
+@Getter
+<span class="fc" id="L12">@Setter</span>
+@Validated
+<span class="fc" id="L14">public class ClienteRequest {</span>
+ @NotBlank(message = &quot;O nome é obrigatório.&quot;)
+<span class="nc" id="L16"> private String nomeCompleto;</span>
+ @NotBlank(message = &quot;O CPF é obrigatório.&quot;)
+<span class="fc" id="L18"> private String cpf;</span>
+ @NotBlank(message = &quot;O CEP é obrigatório.&quot;)
+ @Pattern(regexp = &quot;\\d{5}-\\d{3}&quot;, message = &quot;Formato de CEP inválido. Utilize o formato: XXXXX-XXX.&quot;)
+<span class="nc" id="L21"> private String cep;</span>
+ @NotBlank(message = &quot;O endereço é obrigatório.&quot;)
+<span class="nc" id="L23"> private String endereco;</span>
+ @NotBlank(message = &quot;O telefone é obrigatório.&quot;)
+ @Pattern(regexp = &quot;\\(\\d{2}\\)\\s\\d{5}-\\d{4}&quot;, message = &quot;Formato de telefone inválido. Utilize o formato: (XX) XXXXX-XXXX&quot;)
+<span class="nc" id="L26"> private String telefone;</span>
+ @NotBlank(message = &quot;O e-mail é obrigatório.&quot;)
+ @Email(message = &quot;E-mail inválido. Utilize um formato de e-mail válido.&quot;)
+<span class="nc" id="L29"> private String email;</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.Service.ClienteService;
 
 import java.util.Arrays;
@@ -29,6 +30,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @ExtendWith(MockitoExtension.class)
 class ClienteControllerTest {
@@ -49,8 +51,14 @@ class ClienteControllerTest {
 
     Cliente cliente1;
     Cliente cliente2;
+
+    Cliente cliente3;
     Optional<Cliente> clienteOptional1;
     Optional<Cliente> clienteOptional2;
+
+    Optional<Cliente> clienteOptional3;
+
+    String clienteJson;
 
     @Mock
     private ModelMapper modelMapper;
@@ -76,8 +84,23 @@ class ClienteControllerTest {
                     "(52) 12345-6789",
                     "joaosouza@gmail.com");
 
+            cliente3 = new Cliente(
+                    "gabriela visani",
+                    "12342578902",
+                    "12345-578",
+                    "Rua  123",
+                    "91234-5678",
+                    "fulano.ciclano@example.com"
+            );
+
+            clienteJson = "{\"nomeCompleto\":\"gabriela visani\",\"cpf\":\"12342578902\",\"cep\":\"12345-578\",\"endereco\":\"Rua 123\",\"telefone\":\"91234-5678\",\"email\":\"fulano.ciclano@example.com\"}";
+
+            cliente1.setIdentificadorCliente(1);
+            cliente3.setIdentificadorCliente(1);
+
             clienteOptional1 = Optional.of(cliente1);
             clienteOptional2 = Optional.of(cliente2);
+            clienteOptional3 = Optional.of(cliente3);
 
         clientes = Arrays.asList(cliente1, cliente2);
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
@@ -133,4 +156,33 @@ class ClienteControllerTest {
         verify(clienteRepository, times(1)).save(any(Cliente.class));
     }
 
+
+//    @Test
+//    public void alterarClienteTest() throws Exception {
+//
+//        when(clienteRepository.findById(1)).thenReturn(Optional.of(new Cliente()));
+//        when(modelMapper.map(any(), any())).thenReturn(new Cliente());
+//        when(clienteRepository.save(any(Cliente.class))).thenReturn(new Cliente());
+//
+//        var response = mockMvc.perform(MockMvcRequestBuilders.patch("/cliente/{id}", 1)
+//                        .contentType(MediaType.APPLICATION_JSON)
+//                        .content(clienteJson))
+//                .andExpect(status().isOk());
+//
+//        response.andExpect(jsonPath(("$.nomeCompleto"),equalTo("gabriela visani")));
+//
+//        verify(clienteRepository, times(1)).save(any(Cliente.class));
+//    }
+
 }
+
+//// Mocking
+//Integer id = 1;
+//ClienteRequest request = new ClienteRequest();
+//        request.setNomeCompleto("Nome Modificado");
+//Optional<Cliente> optionalCliente = Optional.of(new Cliente());
+//when(clienteRepository.findById(id)).thenReturn(optionalCliente);
+//when(clienteRepository.save(any(Cliente.class))).thenReturn(new Cliente());
+//
+//// Execução
+//ResponseEntity<?> responseEntity = clienteController.alterarCliente(id, request);

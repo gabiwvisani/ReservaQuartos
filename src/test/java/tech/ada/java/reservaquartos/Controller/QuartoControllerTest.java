@@ -43,6 +43,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static tech.ada.java.reservaquartos.Controller.ClienteControllerTest.asJsonString;
 
+
 @ExtendWith(MockitoExtension.class)
 public class QuartoControllerTest {
     @InjectMocks
@@ -293,6 +294,20 @@ public class QuartoControllerTest {
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
         assertEquals(quartosDisponiveis, responseEntity.getBody());
+    }
+
+    @Test
+    public void quartosDisponiveisTest2() {
+        LocalDate dataEntrada = LocalDate.of(2024, 3, 15);
+        LocalDate dataSaida = LocalDate.of(2024, 3, 20);
+
+        when(quartoService.buscarQuartosDisponiveis(any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(Collections.emptyList());
+
+        ResponseEntity<List<Quarto>> responseEntity = quartoController.getQuartosDisponiveis(dataEntrada, dataSaida);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertNull(responseEntity.getBody());
     }
 }
 

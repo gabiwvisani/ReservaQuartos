@@ -171,4 +171,26 @@ class ClienteControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
+    @Test
+    public void deletarCliente_ExistenteTest() {
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
+
+        ResponseEntity<?> responseEntity = clienteController.deletarCliente(1);
+        verify(clienteRepository, times(1)).deleteById(1);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Cliente excluído com sucesso.", responseEntity.getBody());
+    }
+
+    @Test
+    public void deletarCliente_NaoExistenteTest() {
+        when(clienteRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> responseEntity = clienteController.deletarCliente(1);
+
+        verify(clienteRepository, never()).deleteById(1);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Cliente não encontrado.", responseEntity.getBody());
+    }
 }

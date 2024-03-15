@@ -230,6 +230,25 @@ public class QuartoControllerTest {
     }
 
     @Test
+    public void atualizarQuartoTest2() {
+        QuartoRequest quartoRequest = new QuartoRequest();
+        quartoRequest.setNumeroQuarto(1);
+        quartoRequest.setCapacidadeMaximaDePessoas(2);
+        quartoRequest.setPrecoPorNoite(new BigDecimal("500"));
+        quartoRequest.setDescricao("Quarto teste");
+        quartoRequest.setTipoQuarto(Quarto.TipoQuarto.SUPERIOR);
+
+        Optional<Quarto> optionalQuarto = Optional.empty();
+
+        when(quartoRepository.findById(anyInt())).thenReturn(optionalQuarto);
+
+        ResponseEntity<?> responseEntity = quartoController.atualizarQuarto(1, quartoRequest);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+
+    @Test
     public void deletarQuartoTest() throws Exception{
 
         quarto1.setIdentificadorQuarto(1);

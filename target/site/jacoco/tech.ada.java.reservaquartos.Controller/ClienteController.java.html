@@ -126,17 +126,17 @@ public class ClienteController {
     }
     @DeleteMapping(&quot;/cliente/{id}&quot;)
     public ResponseEntity&lt;?&gt; deletarCliente(@PathVariable Integer id) {
-<span class="nc" id="L129">        Optional&lt;Cliente&gt; clienteOptional = clienteRepository.findById(id);</span>
-<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (clienteOptional.isPresent()) {</span>
-<span class="nc" id="L131">            Cliente cliente = clienteOptional.get();</span>
-<span class="nc" id="L132">            List&lt;Reserva&gt; reservasDoCliente = reservaRepository.findByCliente(cliente);</span>
-<span class="nc bnc" id="L133" title="All 2 branches missed.">            for (Reserva reserva : reservasDoCliente) {</span>
+<span class="fc" id="L129">        Optional&lt;Cliente&gt; clienteOptional = clienteRepository.findById(id);</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">        if (clienteOptional.isPresent()) {</span>
+<span class="fc" id="L131">            Cliente cliente = clienteOptional.get();</span>
+<span class="fc" id="L132">            List&lt;Reserva&gt; reservasDoCliente = reservaRepository.findByCliente(cliente);</span>
+<span class="pc bpc" id="L133" title="1 of 2 branches missed.">            for (Reserva reserva : reservasDoCliente) {</span>
 <span class="nc" id="L134">                reservaController.deletarReserva(reserva.getIdentificadorReserva());</span>
 <span class="nc" id="L135">            }</span>
-<span class="nc" id="L136">            clienteRepository.deleteById(id);</span>
-<span class="nc" id="L137">            return ResponseEntity.ok(&quot;Cliente excluído com sucesso.&quot;);</span>
+<span class="fc" id="L136">            clienteRepository.deleteById(id);</span>
+<span class="fc" id="L137">            return ResponseEntity.ok(&quot;Cliente excluído com sucesso.&quot;);</span>
         } else {
-<span class="nc" id="L139">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Cliente não encontrado.&quot;);</span>
+<span class="fc" id="L139">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Cliente não encontrado.&quot;);</span>
         }
     }
 

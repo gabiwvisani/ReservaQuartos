@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tech.ada.java.reservaquartos.ReservaQuartosApplicationTests
 -------------------------------------------------------------------------------
-Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 6.138 s -- in tech.ada.java.reservaquartos.ReservaQuartosApplicationTests
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 9.514 s -- in tech.ada.java.reservaquartos.ReservaQuartosApplicationTests

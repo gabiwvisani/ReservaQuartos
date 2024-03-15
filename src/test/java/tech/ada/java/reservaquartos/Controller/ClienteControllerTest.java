@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.Service.ClienteService;
 
@@ -39,6 +40,8 @@ class ClienteControllerTest {
 
     @Mock
     private ClienteService clienteService;
+    @Mock
+    private ReservaRepository reservaRepository;
 
     @InjectMocks
     private ClienteController clienteController;

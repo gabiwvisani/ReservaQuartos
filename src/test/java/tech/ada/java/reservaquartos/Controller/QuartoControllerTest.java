@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Quarto;
+import tech.ada.java.reservaquartos.Domain.Reserva;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 
 import org.springframework.test.web.servlet.MvcResult;
@@ -26,10 +27,7 @@ import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 import tech.ada.java.reservaquartos.Request.QuartoRequest;
 
 import java.math.BigDecimal;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static javax.management.Query.or;
 import static org.hamcrest.Matchers.hasSize;
@@ -52,6 +50,8 @@ public class QuartoControllerTest {
 
     @Mock
     private ReservaRepository reservaRepository;
+    @Mock
+    private ReservaController reservaController;
 
     Quarto quarto;
     Quarto quarto1;
@@ -233,15 +233,25 @@ public class QuartoControllerTest {
     public void deletarQuartoTest() throws Exception{
 
         quarto1.setIdentificadorQuarto(1);
+        Reserva reserva = new Reserva();
+        reserva.setIdentificadorReserva(1);
+        reserva.setQuarto(quarto1);
+        List<Reserva> reservasDoQuarto = new ArrayList<>();
+        reservasDoQuarto.add(reserva);
 
-        when(quartoRepository.findById(1)).thenReturn(Optional.ofNullable(quarto1));
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(reservaRepository.findByQuarto(quarto1)).thenReturn(reservasDoQuarto);
 
         mockMvc.perform(delete("/quarto/{id}",1)
                         .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isOk());
+                        .andExpect(status().isOk());
 
         verify(quartoRepository, times(1)).findById(1);
         verify(reservaRepository, times(1)).findByQuarto(quarto1);
+
+        for (Reserva reservaDaLista : reservasDoQuarto) {
+            verify(reservaController, times(1)).deletarReserva(reservaDaLista.getIdentificadorReserva());
+        }
         verify(quartoRepository, times(1)).deleteById(1);
     }
 }

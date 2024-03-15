@@ -25,8 +25,10 @@ import org.springframework.test.web.servlet.MvcResult;
 import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 import tech.ada.java.reservaquartos.Request.QuartoRequest;
+import tech.ada.java.reservaquartos.Service.QuartoService;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.*;
 
 import static javax.management.Query.or;
@@ -52,6 +54,9 @@ public class QuartoControllerTest {
     private ReservaRepository reservaRepository;
     @Mock
     private ReservaController reservaController;
+
+    @Mock
+    private QuartoService quartoService;
 
     Quarto quarto;
     Quarto quarto1;
@@ -230,6 +235,24 @@ public class QuartoControllerTest {
     }
 
     @Test
+    public void atualizarQuartoTest2() {
+        QuartoRequest quartoRequest = new QuartoRequest();
+        quartoRequest.setNumeroQuarto(1);
+        quartoRequest.setCapacidadeMaximaDePessoas(2);
+        quartoRequest.setPrecoPorNoite(new BigDecimal("500"));
+        quartoRequest.setDescricao("Quarto teste");
+        quartoRequest.setTipoQuarto(Quarto.TipoQuarto.SUPERIOR);
+
+        Optional<Quarto> optionalQuarto = Optional.empty();
+
+        when(quartoRepository.findById(anyInt())).thenReturn(optionalQuarto);
+
+        ResponseEntity<?> responseEntity = quartoController.atualizarQuarto(1, quartoRequest);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+
+    @Test
     public void deletarQuartoTest() throws Exception{
 
         quarto1.setIdentificadorQuarto(1);
@@ -254,22 +277,22 @@ public class QuartoControllerTest {
         }
         verify(quartoRepository, times(1)).deleteById(1);
     }
+
     @Test
-    public void atualizarQuartoTest2() {
-        QuartoRequest quartoRequest = new QuartoRequest();
-        quartoRequest.setNumeroQuarto(1);
-        quartoRequest.setCapacidadeMaximaDePessoas(2);
-        quartoRequest.setPrecoPorNoite(new BigDecimal("500"));
-        quartoRequest.setDescricao("Quarto teste");
-        quartoRequest.setTipoQuarto(Quarto.TipoQuarto.SUPERIOR);
+    public void quartosDisponiveisTest1(){
+        LocalDate dataEntrada = LocalDate.of(2024, 3, 15);
+        LocalDate dataSaida = LocalDate.of(2024, 3, 20);
+        List<Quarto> quartosDisponiveis = new ArrayList<>();
+        quartosDisponiveis.add(new Quarto(101, 2, "Quarto Standard", BigDecimal.valueOf(100), Quarto.TipoQuarto.STANDARD));
+        quartosDisponiveis.add(new Quarto(102, 4, "Quarto Superior", BigDecimal.valueOf(150), Quarto.TipoQuarto.SUPERIOR));
 
-        Optional<Quarto> optionalQuarto = Optional.empty();
+        when(quartoService.buscarQuartosDisponiveis(any(LocalDate.class), any(LocalDate.class)))
+                .thenReturn(quartosDisponiveis);
 
-        when(quartoRepository.findById(anyInt())).thenReturn(optionalQuarto);
+        ResponseEntity<List<Quarto>> responseEntity = quartoController.getQuartosDisponiveis(dataEntrada, dataSaida);
 
-        ResponseEntity<?> responseEntity = quartoController.atualizarQuarto(1, quartoRequest);
-
-        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals(quartosDisponiveis, responseEntity.getBody());
     }
 }
 

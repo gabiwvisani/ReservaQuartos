@@ -13,7 +13,7 @@ ReservaQuartos,tech.ada.java.reservaquartos.Request,AlteraValorQuartoRequest,0,9
 ReservaQuartos,tech.ada.java.reservaquartos.Service,ClienteService,0,24,0,2,0,7,0,3,0,2
 ReservaQuartos,tech.ada.java.reservaquartos.Service,ReservaService,36,6,8,0,8,3,6,1,2,1
 ReservaQuartos,tech.ada.java.reservaquartos.Service,QuartoService,6,6,0,0,1,3,1,1,1,1
-ReservaQuartos,tech.ada.java.reservaquartos.Controller,ClienteController,108,164,15,13,24,39,14,6,1,5
-ReservaQuartos,tech.ada.java.reservaquartos.Controller,QuartoController,38,191,2,12,8,45,5,13,3,8
+ReservaQuartos,tech.ada.java.reservaquartos.Controller,ClienteController,73,199,12,16,16,47,12,8,0,6
+ReservaQuartos,tech.ada.java.reservaquartos.Controller,QuartoController,29,206,2,14,6,49,4,15,2,9
 ReservaQuartos,tech.ada.java.reservaquartos.Controller,ReservaController,324,18,48,0,73,7,29,1,5,1
 ReservaQuartos,tech.ada.java.reservaquartos.Controller,ErrorResponse,7,9,0,0,2,2,2,2,2,2

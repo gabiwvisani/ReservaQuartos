@@ -16,6 +16,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.Service.ClienteService;
 
@@ -39,6 +40,8 @@ class ClienteControllerTest {
 
     @Mock
     private ClienteService clienteService;
+    @Mock
+    private ReservaRepository reservaRepository;
 
     @InjectMocks
     private ClienteController clienteController;
@@ -170,5 +173,27 @@ class ClienteControllerTest {
         ResponseEntity<?> responseEntity = clienteController.alterarCliente(1, cliente3);
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+    }
+    @Test
+    public void deletarCliente_ExistenteTest() {
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
+
+        ResponseEntity<?> responseEntity = clienteController.deletarCliente(1);
+        verify(clienteRepository, times(1)).deleteById(1);
+
+        assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+        assertEquals("Cliente excluído com sucesso.", responseEntity.getBody());
+    }
+
+    @Test
+    public void deletarCliente_NaoExistenteTest() {
+        when(clienteRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> responseEntity = clienteController.deletarCliente(1);
+
+        verify(clienteRepository, never()).deleteById(1);
+
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        assertEquals("Cliente não encontrado.", responseEntity.getBody());
     }
 }

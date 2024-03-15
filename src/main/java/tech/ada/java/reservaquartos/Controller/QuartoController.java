@@ -94,8 +94,14 @@ public class QuartoController {
             @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dataSaida) {
 
         List<Quarto> quartosDisponiveis = quartoService.buscarQuartosDisponiveis(dataEntrada, dataSaida);
-        return ResponseEntity.ok(quartosDisponiveis);
+
+        if(quartosDisponiveis.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else {
+            return ResponseEntity.ok(quartosDisponiveis);
+        }
     }
+
     @PatchMapping("/quarto/{id}")
     public ResponseEntity<Quarto> alterarValorQuarto(
             @PathVariable Integer id,

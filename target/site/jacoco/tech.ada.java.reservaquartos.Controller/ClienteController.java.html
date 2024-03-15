@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="pt"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ClienteController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">ReservaQuartos</a> &gt; <a href="index.source.html" class="el_package">tech.ada.java.reservaquartos.Controller</a> &gt; <span class="el_source">ClienteController.java</span></div><h1>ClienteController.java</h1><pre class="source lang-java linenums">package tech.ada.java.reservaquartos.Controller;
+
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import tech.ada.java.reservaquartos.Domain.Reserva;
+import tech.ada.java.reservaquartos.Repository.ReservaRepository;
+import tech.ada.java.reservaquartos.Request.ClienteRequest;
+import tech.ada.java.reservaquartos.Domain.Cliente;
+import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Service.ClienteService;
+
+import java.util.List;
+import java.util.Optional;
+
+@RestController
+public class ClienteController {
+    private final ClienteRepository clienteRepository;
+    private final ClienteService clienteService;
+   // private final Cliente cliente;
+    private final ReservaRepository reservaRepository;
+    private final ReservaController reservaController;
+    private final ModelMapper modelMapper;
+    @Autowired
+<span class="fc" id="L27">    public ClienteController(ClienteRepository clienteRepository,ClienteService clienteService,ReservaRepository reservaRepository,ReservaController reservaController, ModelMapper modelMapper) {</span>
+<span class="fc" id="L28">        this.clienteRepository = clienteRepository;</span>
+<span class="fc" id="L29">        this.clienteService= clienteService;</span>
+<span class="fc" id="L30">        this.reservaRepository= reservaRepository;</span>
+<span class="fc" id="L31">        this.reservaController =reservaController;</span>
+<span class="fc" id="L32">        this.modelMapper = modelMapper;</span>
+       // this.cliente = cliente;
+<span class="fc" id="L34">    }</span>
+
+    @PostMapping(&quot;/cliente&quot;)
+    public ResponseEntity&lt;?&gt; cadastrarCliente(@jakarta.validation.Valid @RequestBody ClienteRequest clienteRequest) {
+
+<span class="fc" id="L39">        String mensagemErro = Cliente.validarCPF(clienteRequest.getCpf());</span>
+<span class="pc bpc" id="L40" title="1 of 2 branches missed.">        if (mensagemErro != null) {</span>
+<span class="nc" id="L41">            ErrorResponse errorResponse = new ErrorResponse(mensagemErro);</span>
+<span class="nc" id="L42">            return ResponseEntity.badRequest().body(errorResponse);</span>
+        }
+
+        try {
+<span class="fc" id="L46">            clienteService.verificarDuplicidadeCpf(clienteRequest.getCpf());</span>
+<span class="nc" id="L47">        } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L48">            ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());</span>
+<span class="nc" id="L49">            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);</span>
+<span class="fc" id="L50">        }</span>
+
+<span class="fc" id="L52">        Cliente clienteConvertido = modelMapper.map(clienteRequest, Cliente.class);</span>
+<span class="fc" id="L53">        Cliente novoCliente = clienteRepository.save(clienteConvertido);</span>
+<span class="fc" id="L54">        return ResponseEntity.status(HttpStatus.CREATED).body(novoCliente);</span>
+    }
+
+    @GetMapping(&quot;/cliente&quot;)
+    public ResponseEntity&lt;?&gt; buscarTodosClientes() {
+<span class="fc" id="L59">        List&lt;Cliente&gt; listaTodosClientes = clienteRepository.findAll();</span>
+<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (listaTodosClientes.isEmpty()) {</span>
+<span class="nc" id="L61">            ErrorResponse errorResponse = new ErrorResponse(&quot;A lista de clientes está vazia&quot;);</span>
+<span class="nc" id="L62">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+        }
+<span class="fc" id="L64">        return ResponseEntity.ok(listaTodosClientes);</span>
+      }
+
+    @GetMapping(&quot;/cliente/{cpf}&quot;)
+    public ResponseEntity&lt;?&gt; buscarClientePorCPF(@PathVariable String cpf) {
+<span class="fc" id="L69">        Optional&lt;Cliente&gt; clienteOptional = clienteRepository.findByCpf(cpf);</span>
+
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (clienteOptional.isPresent()) {</span>
+<span class="fc" id="L72">            return ResponseEntity.ok(clienteOptional.get());</span>
+        } else {
+<span class="nc" id="L74">            ErrorResponse errorResponse = new ErrorResponse(&quot;Não foi localizado um cliente com este CPF.&quot;);</span>
+<span class="nc" id="L75">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+        }
+    }
+
+    @PatchMapping(&quot;/cliente/{id}&quot;)
+    public ResponseEntity&lt;?&gt; alterarCliente(
+            @PathVariable Integer id,
+            @jakarta.validation.Valid @RequestBody ClienteRequest request) {
+
+<span class="fc" id="L84">        Optional&lt;Cliente&gt; optionalCliente = clienteRepository.findById(id);</span>
+
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (optionalCliente.isPresent()) {</span>
+<span class="fc" id="L87">            Cliente clienteModificado = optionalCliente.get();</span>
+
+<span class="pc bpc" id="L89" title="1 of 2 branches missed.">            if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());</span>
+<span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if (request.getCpf() != null  &amp;&amp;</span>
+                   // !request.getCpf().equals(null) //&amp;&amp;
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">                    !request.getCpf().equals(clienteModificado.getCpf() )</span>
+            )
+            {
+                try
+                {
+<span class="fc" id="L97">                    clienteService.verificarDuplicidadeCpf(request.getCpf());</span>
+<span class="nc" id="L98">                } catch (IllegalArgumentException ex) {</span>
+<span class="nc" id="L99">                    ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());</span>
+<span class="nc" id="L100">                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);</span>
+<span class="fc" id="L101">                }</span>
+
+<span class="fc" id="L103">                String mensagemErro = Cliente.validarCPF(request.getCpf());</span>
+<span class="pc bpc" id="L104" title="1 of 2 branches missed.">                if (mensagemErro != null)</span>
+                {
+<span class="nc" id="L106">                    ErrorResponse errorResponse = new ErrorResponse(mensagemErro);</span>
+<span class="nc" id="L107">                    return ResponseEntity.badRequest().body(errorResponse);</span>
+                }
+
+
+<span class="fc" id="L111">                clienteModificado.setCpf(request.getCpf());</span>
+            }
+
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">            if (request.getCep() != null) clienteModificado.setCep(request.getCep());</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">            if (request.getEndereco() != null) clienteModificado.setEndereco(request.getEndereco());</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">            if (request.getTelefone() != null) clienteModificado.setTelefone(request.getTelefone());</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">            if (request.getEmail() != null) clienteModificado.setEmail(request.getEmail());</span>
+
+<span class="fc" id="L119">            Cliente clienteAtualizado = clienteRepository.save(clienteModificado);</span>
+<span class="fc" id="L120">            return ResponseEntity.ok(clienteAtualizado);</span>
+
+        } else {
+<span class="fc" id="L123">            ErrorResponse errorResponse = new ErrorResponse(&quot;Não foi localizado um cliente com este ID.&quot;);</span>
+<span class="fc" id="L124">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+        }
+    }
+    @DeleteMapping(&quot;/cliente/{id}&quot;)
+    public ResponseEntity&lt;?&gt; deletarCliente(@PathVariable Integer id) {
+<span class="nc" id="L129">        Optional&lt;Cliente&gt; clienteOptional = clienteRepository.findById(id);</span>
+<span class="nc bnc" id="L130" title="All 2 branches missed.">        if (clienteOptional.isPresent()) {</span>
+<span class="nc" id="L131">            Cliente cliente = clienteOptional.get();</span>
+<span class="nc" id="L132">            List&lt;Reserva&gt; reservasDoCliente = reservaRepository.findByCliente(cliente);</span>
+<span class="nc bnc" id="L133" title="All 2 branches missed.">            for (Reserva reserva : reservasDoCliente) {</span>
+<span class="nc" id="L134">                reservaController.deletarReserva(reserva.getIdentificadorReserva());</span>
+<span class="nc" id="L135">            }</span>
+<span class="nc" id="L136">            clienteRepository.deleteById(id);</span>
+<span class="nc" id="L137">            return ResponseEntity.ok(&quot;Cliente excluído com sucesso.&quot;);</span>
+        } else {
+<span class="nc" id="L139">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Cliente não encontrado.&quot;);</span>
+        }
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

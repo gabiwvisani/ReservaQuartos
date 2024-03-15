@@ -21,6 +21,7 @@ import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 
 import org.springframework.test.web.servlet.MvcResult;
+import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 import tech.ada.java.reservaquartos.Request.AlteraValorQuartoRequest;
 import tech.ada.java.reservaquartos.Request.QuartoRequest;
 
@@ -37,6 +38,7 @@ import static org.junit.jupiter.params.shadow.com.univocity.parsers.conversions.
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.content;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.jsonPath;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static tech.ada.java.reservaquartos.Controller.ClienteControllerTest.asJsonString;
@@ -47,6 +49,10 @@ public class QuartoControllerTest {
     private QuartoController quartoController;
     @Mock
     private QuartoRepository quartoRepository;
+
+    @Mock
+    private ReservaRepository reservaRepository;
+
     Quarto quarto;
     Quarto quarto1;
     Quarto quarto2;
@@ -221,6 +227,22 @@ public class QuartoControllerTest {
         assertEquals(quartoRequest.getPrecoPorNoite(), quartoExistente.getPrecoPorNoite());
         assertEquals(quartoRequest.getDescricao(), quartoExistente.getDescricao());
         assertEquals(quartoRequest.getTipoQuarto(), quartoExistente.getTipoQuarto());
+    }
+
+    @Test
+    public void deletarQuartoTest() throws Exception{
+
+        quarto1.setIdentificadorQuarto(1);
+
+        when(quartoRepository.findById(1)).thenReturn(Optional.ofNullable(quarto1));
+
+        mockMvc.perform(delete("/quarto/{id}",1)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk());
+
+        verify(quartoRepository, times(1)).findById(1);
+        verify(reservaRepository, times(1)).findByQuarto(quarto1);
+        verify(quartoRepository, times(1)).deleteById(1);
     }
 }
 

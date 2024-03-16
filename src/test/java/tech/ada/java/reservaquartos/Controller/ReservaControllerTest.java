@@ -14,6 +14,8 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Domain.Reserva;
+import tech.ada.java.reservaquartos.Repository.ClienteRepository;
+import tech.ada.java.reservaquartos.Repository.QuartoRepository;
 import tech.ada.java.reservaquartos.Repository.ReservaRepository;
 
 import java.math.BigDecimal;
@@ -30,8 +32,17 @@ import static tech.ada.java.reservaquartos.Controller.ClienteControllerTest.asJs
 public class ReservaControllerTest {
     @Mock
     private ReservaRepository reservaRepository;
+
+    @Mock
+    private ClienteRepository clienteRepository;
+    @Mock
+    private QuartoRepository quartoRepository;
     @InjectMocks
     private ReservaController reservaController;
+    @InjectMocks
+    private ClienteController clienteController;
+    @InjectMocks
+    private QuartoController quartoController;
     private MockMvc mockMvc;
     private Reserva reserva1;
     private Reserva reserva2;
@@ -109,11 +120,12 @@ public class ReservaControllerTest {
 
 //    @Test // Teste findAllReservasTest está com problema na leitura do LocalDate
 //    public void findAllReservasTest() throws Exception {
-//
+//        ObjectMapper objectMapper = new ObjectMapper();
+//        String expectedJson = objectMapper.writeValueAsString(listaReservas);
 //        when(reservaRepository.findAll()).thenReturn(listaReservas);
 //        mockMvc.perform(MockMvcRequestBuilders.get("/reserva").
 //                        contentType(MediaType.APPLICATION_JSON)).
-//                andExpect(content().json(asJsonString(listaReservas)));
+//                andExpect(content().json(expectedJson));
 //        verify(reservaRepository, times(1)).findAll();
 //    }
 

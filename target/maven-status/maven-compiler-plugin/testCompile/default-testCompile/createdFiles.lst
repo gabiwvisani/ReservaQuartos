@@ -1,6 +1,7 @@
-tech\ada\java\reservaquartos\Controller\ClienteControllerTest.class
 tech\ada\java\reservaquartos\ReservaQuartosApplicationTests.class
+tech\ada\java\reservaquartos\Domain\ClienteTest.class
+tech\ada\java\reservaquartos\Domain\QuartoTest.class
+tech\ada\java\reservaquartos\Controller\ClienteControllerTest.class
 tech\ada\java\reservaquartos\Service\ClienteServiceTest.class
 tech\ada\java\reservaquartos\Controller\ReservaControllerTest.class
-tech\ada\java\reservaquartos\Domain\ClienteTest.class
 tech\ada\java\reservaquartos\Controller\QuartoControllerTest.class

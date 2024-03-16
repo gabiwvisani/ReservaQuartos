@@ -149,7 +149,7 @@ class ClienteControllerTest {
     }
 
     @Test
-    public void testAlterarCliente_Existente() {
+    public void testAlterarClienteExistente() {
 
 
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
@@ -167,7 +167,7 @@ class ClienteControllerTest {
 
     }
     @Test
-    public void testAlterarCliente_NaoExistente() {
+    public void testAlterarClienteNaoExistente() {
         when(clienteRepository.findById(1)).thenReturn(Optional.empty());
 
         ResponseEntity<?> responseEntity = clienteController.alterarCliente(1, cliente3);
@@ -175,7 +175,7 @@ class ClienteControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
     }
     @Test
-    public void deletarCliente_ExistenteTest() {
+    public void deletarClienteExistenteTest() {
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
 
         ResponseEntity<?> responseEntity = clienteController.deletarCliente(1);
@@ -186,7 +186,7 @@ class ClienteControllerTest {
     }
 
     @Test
-    public void deletarCliente_NaoExistenteTest() {
+    public void deletarClienteNaoExistenteTest() {
         when(clienteRepository.findById(1)).thenReturn(Optional.empty());
 
         ResponseEntity<?> responseEntity = clienteController.deletarCliente(1);

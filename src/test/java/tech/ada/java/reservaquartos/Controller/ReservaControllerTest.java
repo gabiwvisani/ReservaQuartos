@@ -27,7 +27,6 @@ import tech.ada.java.reservaquartos.Service.ReservaService;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -125,9 +124,6 @@ public class ReservaControllerTest {
 
         listaReservas.add(reserva2);
         listaReservas.add(reserva3);
-                //= new ArrayList<Reserva>(reserva1, reserva2);
-
-
         mockMvc = MockMvcBuilders.standaloneSetup(reservaController).build();
     }
 

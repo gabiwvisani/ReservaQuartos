@@ -90,7 +90,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void buscarQuartoPorIDTest1() throws Exception {
+    public void buscarQuartoExistentePorIDTest() throws Exception {
         when(quartoRepository.findById(anyInt())).thenReturn(optionalQuarto);
         mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -98,7 +98,7 @@ public class QuartoControllerTest {
         verify(quartoRepository, times(1)).findById(anyInt());
     }
     @Test
-    public void buscarQuartoPorIDTest2() throws Exception {
+    public void buscarQuartoInexistentePorIDTest() throws Exception {
         when(quartoRepository.findById(anyInt())).thenReturn(Optional.empty());
         mockMvc.perform(MockMvcRequestBuilders.get("/quarto/{id}", 1)
                         .contentType(MediaType.APPLICATION_JSON))
@@ -114,27 +114,24 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void buscarPorCapacidadeMaximaTest() throws Exception {
+    public void buscarPorCapacidadeMaximaComQuartoEncontradoTest() throws Exception {
         int capacidadeMaxima = 3;
 
         List<Quarto> quartosMockados = Arrays.asList(quarto1);
         when(quartoRepository.findByCapacidadeMaximaDePessoas(capacidadeMaxima)).thenReturn(quartosMockados);
 
-        //Realizando requisição pro endpoint
         mockMvc.perform(get("/quarto")
                         .param("capacidadeMaximaDePessoas", String.valueOf(capacidadeMaxima)))
                 .andExpect(status().isOk());
 
-        //Verificando se o método do repositório foi chamado ao menos 1 vez
         verify(quartoRepository, times(1)).findByCapacidadeMaximaDePessoas(capacidadeMaxima);
     }
 
 
     @Test
-    public void buscarPorCapacidadeMaximaTest2() throws Exception {
+    public void buscarPorCapacidadeMaximaSemQuartoEncontradoTest() throws Exception {
         int capacidadeMaxima = 3;
 
-        //Alterando a capacidade máxima retornada pelo mock
         List<Quarto> quartosMockados = Arrays.asList(quarto2); // Quarto 2 tem capacidade 2
         when(quartoRepository.findByCapacidadeMaximaDePessoas(capacidadeMaxima)).thenReturn(quartosMockados);
 
@@ -144,13 +141,12 @@ public class QuartoControllerTest {
 
         verify(quartoRepository, times(1)).findByCapacidadeMaximaDePessoas(capacidadeMaxima);
 
-        //Verificando se a resposta contém quartos com capacidade maior que a capacidade máxima
         String responseContent = result.getResponse().getContentAsString();
         assertFalse(responseContent.contains("\"capacidadeMaximaDePessoas\":3"));
     }
 
     @Test
-    public void buscarPorPrecoPorNoiteTest() throws Exception {
+    public void buscarPorPrecoPorNoiteQuartoExistenteTest() throws Exception {
         BigDecimal precoPorNoite = new BigDecimal("400");
 
         List<Quarto> quartosMockados = Arrays.asList(quarto1);
@@ -165,7 +161,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void buscarPorPrecoPorNoiteTest_2() throws Exception{
+    public void buscarPorPrecoPorNoiteQuartoInexistenteTest() throws Exception{
         BigDecimal precoPorNoite = new BigDecimal("400");
 
         when(quartoRepository.findByPrecoPorNoite(precoPorNoite)).thenReturn(Collections.emptyList());
@@ -178,7 +174,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void alterarValorQuartoTest() throws Exception {
+    public void alterarValorQuartoQuartoExistenteTest() throws Exception {
         int quartoId = 1;
         BigDecimal novoPrecoPorNoite = new BigDecimal("500");
         AlteraValorQuartoRequest request = new AlteraValorQuartoRequest(novoPrecoPorNoite);
@@ -195,7 +191,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void alterarValorQuartoTest2() throws Exception {
+    public void alterarValorQuartoQuartoInexistenteTest() throws Exception {
         int quartoId = 1;
         BigDecimal novoPrecoPorNoite = new BigDecimal("500");
         AlteraValorQuartoRequest request = new AlteraValorQuartoRequest(novoPrecoPorNoite);
@@ -209,7 +205,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void atualizarQuartoTest() {
+    public void atualizarQuartoExistenteTest() {
         QuartoRequest quartoRequest = new QuartoRequest();
         quartoRequest.setNumeroQuarto(1);
         quartoRequest.setCapacidadeMaximaDePessoas(2);
@@ -236,7 +232,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void atualizarQuartoTest2() {
+    public void atualizarQuartoInexistenteTest() {
         QuartoRequest quartoRequest = new QuartoRequest();
         quartoRequest.setNumeroQuarto(1);
         quartoRequest.setCapacidadeMaximaDePessoas(2);
@@ -280,7 +276,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void quartosDisponiveisTest1(){
+    public void quartosDisponiveisTest(){
         LocalDate dataEntrada = LocalDate.of(2024, 3, 15);
         LocalDate dataSaida = LocalDate.of(2024, 3, 20);
         List<Quarto> quartosDisponiveis = new ArrayList<>();
@@ -297,7 +293,7 @@ public class QuartoControllerTest {
     }
 
     @Test
-    public void quartosDisponiveisTest2() {
+    public void semQuartosDisponiveisTest() {
         LocalDate dataEntrada = LocalDate.of(2024, 3, 15);
         LocalDate dataSaida = LocalDate.of(2024, 3, 20);
 

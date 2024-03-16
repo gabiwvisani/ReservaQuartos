@@ -72,7 +72,7 @@ class ClienteServiceTest {
     }
 
     @Test
-    public void verificarDuplicidadeCpfTeste(){
+    public void verificarDuplicidadeCpfClienteExistente(){
         when(clienteRepository.findByCpf(cliente1.getCpf())).thenReturn(Optional.of(cliente1));
         IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
             clienteService.verificarDuplicidadeCpf(cliente1.getCpf());
@@ -82,8 +82,7 @@ class ClienteServiceTest {
     }
 
     @Test
-    public void verificarDuplicidadeCpfTeste2(){
-     //   when(clienteRepository.findByCpf(cliente2.getCpf())).thenReturn(Optional.of(cliente1));
+    public void verificarDuplicidadeCpfClienteInexistente(){
         when(clienteRepository.findByCpf(cliente2.getCpf())).thenReturn(Optional.empty());
         Cliente cliente = clienteService.verificarDuplicidadeCpf(cliente2.getCpf());
         assertNull(cliente);

@@ -172,47 +172,4 @@ public class ReservaController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Reserva não encontrado.");
         }
     }
-//    @PutMapping("/reserva/{id}")
-//    public ResponseEntity<?> alterarTudoReserva(
-//            @PathVariable Integer id,
-//            @RequestParam Integer idQuarto,
-//            @RequestParam Integer idCliente,
-//            @RequestBody ReservaRequest request){
-//
-//        Optional<Reserva> optionalReserva = reservaRepository.findById(id);
-//
-//        if(optionalReserva.isPresent()){
-//            Reserva reservaModificada = optionalReserva.get();
-//            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida(),reservaModificada);
-//            if (hasConflicts) {
-//                return ResponseEntity.status(HttpStatus.CONFLICT).body("O quarto já está reservado para as datas especificadas");
-//            }
-//            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
-//            if (!dataValida) {
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.");
-//            }
-//            reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
-//            if(request.getDataRealizacaoReserva()==null){
-//                reservaModificada.setDataRealizacaoReserva();
-//            }else {
-//                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
-//            }
-//            reservaModificada.setDataAtualizacaoReserva();
-//            reservaModificada.setDataEntrada(request.getDataEntrada());
-//            reservaModificada.setDataSaida(request.getDataSaida());
-//            reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
-//            Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -> new RuntimeException("Quarto não encontrado"));;
-//            reservaModificada.setQuarto(quarto);
-//            reservaModificada.setValorTotalReserva();
-//            Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -> new RuntimeException("Cliente não encontrado"));;
-//            reservaModificada.setCliente(cliente);
-//            reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
-//            Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
-//            return ResponseEntity.ok(reservaAtualizada);
-//        } else {
-//            Map<String, String> errorResponse = new HashMap<>();
-//            errorResponse.put("mensagem", "Não foi possível localizar a reserva pelo ID");
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-//        }
-//    }
 }

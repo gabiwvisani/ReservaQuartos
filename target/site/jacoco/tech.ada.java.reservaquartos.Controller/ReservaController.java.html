@@ -47,29 +47,29 @@ public class ReservaController {
     public ResponseEntity&lt;?&gt; cadastrarQuarto(@RequestParam Integer idQuarto,
                                                    @RequestParam Integer idCliente,
                                                    @RequestBody ReservaRequest reservaRequest){
-<span class="nc" id="L50">        Quarto quarto = quartoRepository.findById(idQuarto).orElse(null);</span>
-<span class="nc bnc" id="L51" title="All 2 branches missed.">        if (quarto == null) {</span>
+<span class="fc" id="L50">        Quarto quarto = quartoRepository.findById(idQuarto).orElse(null);</span>
+<span class="pc bpc" id="L51" title="1 of 2 branches missed.">        if (quarto == null) {</span>
 <span class="nc" id="L52">            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Quarto não encontrado&quot;);</span>
         }
-<span class="nc" id="L54">        Cliente cliente = clienteRepository.findById(idCliente).orElse(null);</span>
-<span class="nc bnc" id="L55" title="All 2 branches missed.">        if(cliente==null){</span>
+<span class="fc" id="L54">        Cliente cliente = clienteRepository.findById(idCliente).orElse(null);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if(cliente==null){</span>
 <span class="nc" id="L56">            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Cliente não encontrado&quot;);</span>
         }
-<span class="nc" id="L58">        LocalDate dataEntrada = reservaRequest.getDataEntrada();</span>
-<span class="nc" id="L59">        LocalDate dataSaida = reservaRequest.getDataSaida();</span>
-<span class="nc" id="L60">        boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida, null);</span>
-<span class="nc" id="L61">        boolean dataValida = reservaService.validaData(dataEntrada, dataSaida);</span>
-<span class="nc bnc" id="L62" title="All 2 branches missed.">        if (!hasConflicts) {</span>
-<span class="nc bnc" id="L63" title="All 2 branches missed.">            if(dataValida) {</span>
-<span class="nc" id="L64">                Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);</span>
-<span class="nc" id="L65">                reservaConvertido.setQuarto(quarto);</span>
-<span class="nc" id="L66">                reservaConvertido.setCliente(cliente);</span>
-<span class="nc" id="L67">                reservaConvertido.setValorTotalReserva();</span>
-<span class="nc" id="L68">                reservaConvertido.setDataAtualizacaoReserva();</span>
-<span class="nc" id="L69">                reservaConvertido.setDataRealizacaoReserva();</span>
-<span class="nc" id="L70">                Reserva novaReserva = reservaRepository.save(reservaConvertido);</span>
+<span class="fc" id="L58">        LocalDate dataEntrada = reservaRequest.getDataEntrada();</span>
+<span class="fc" id="L59">        LocalDate dataSaida = reservaRequest.getDataSaida();</span>
+<span class="fc" id="L60">        boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, dataEntrada, dataSaida, null);</span>
+<span class="fc" id="L61">        boolean dataValida = reservaService.validaData(dataEntrada, dataSaida);</span>
+<span class="pc bpc" id="L62" title="1 of 2 branches missed.">        if (!hasConflicts) {</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">            if(dataValida) {</span>
+<span class="fc" id="L64">                Reserva reservaConvertido = modelMapper.map(reservaRequest, Reserva.class);</span>
+<span class="fc" id="L65">                reservaConvertido.setQuarto(quarto);</span>
+<span class="fc" id="L66">                reservaConvertido.setCliente(cliente);</span>
+<span class="fc" id="L67">                reservaConvertido.setValorTotalReserva();</span>
+<span class="fc" id="L68">                reservaConvertido.setDataAtualizacaoReserva();</span>
+<span class="fc" id="L69">                reservaConvertido.setDataRealizacaoReserva();</span>
+<span class="fc" id="L70">                Reserva novaReserva = reservaRepository.save(reservaConvertido);</span>
                 //novaReserva.setValorTotalReserva();
-<span class="nc" id="L72">                return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);</span>
+<span class="fc" id="L72">                return ResponseEntity.status(HttpStatus.CREATED).body(novaReserva);</span>
             }else{
 <span class="nc" id="L74">                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.&quot;);</span>
             }
@@ -81,21 +81,21 @@ public class ReservaController {
 
     @GetMapping(&quot;/reserva&quot;)
     public List&lt;Reserva&gt; findAllReservas(){
-<span class="nc" id="L84">        List&lt;Reserva&gt; listaReservas = reservaRepository.findAll();</span>
-<span class="nc" id="L85">        return listaReservas;</span>
+<span class="fc" id="L84">        List&lt;Reserva&gt; listaReservas = reservaRepository.findAll();</span>
+<span class="fc" id="L85">        return listaReservas;</span>
     }
 
 
     @GetMapping(&quot;/reserva/{id}&quot;)
     public ResponseEntity&lt;?&gt; findReservaById(@PathVariable Integer id){
-<span class="nc" id="L91">        Optional&lt;Reserva&gt; reservaOptional = reservaRepository.findById(id);</span>
+<span class="fc" id="L91">        Optional&lt;Reserva&gt; reservaOptional = reservaRepository.findById(id);</span>
 
-<span class="nc bnc" id="L93" title="All 2 branches missed.">        if(reservaOptional.isPresent()){</span>
-<span class="nc" id="L94">            return ResponseEntity.ok(reservaOptional.get());</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">        if(reservaOptional.isPresent()){</span>
+<span class="fc" id="L94">            return ResponseEntity.ok(reservaOptional.get());</span>
         } else{
-<span class="nc" id="L96">            Map&lt;String, String&gt; errorResponse = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L97">            errorResponse.put(&quot;mensagem&quot;, &quot;Não foi possível localizar a reserva pelo ID&quot;);</span>
-<span class="nc" id="L98">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+<span class="fc" id="L96">            Map&lt;String, String&gt; errorResponse = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L97">            errorResponse.put(&quot;mensagem&quot;, &quot;Não foi possível localizar a reserva pelo ID&quot;);</span>
+<span class="fc" id="L98">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
         }
     }
 
@@ -106,114 +106,71 @@ public class ReservaController {
             @RequestParam Integer idCliente,
             @RequestBody ReservaRequest request){
 
-<span class="nc" id="L109">        Optional&lt;Reserva&gt; optionalReserva = reservaRepository.findById(id);</span>
+<span class="fc" id="L109">        Optional&lt;Reserva&gt; optionalReserva = reservaRepository.findById(id);</span>
 
-<span class="nc bnc" id="L111" title="All 2 branches missed.">        if(optionalReserva.isPresent()){</span>
-<span class="nc" id="L112">            Reserva reservaModificada = optionalReserva.get();</span>
-<span class="nc bnc" id="L113" title="All 4 branches missed.">            if (request.getDataEntrada() != null ||request.getDataSaida() != null) {</span>
-<span class="nc bnc" id="L114" title="All 4 branches missed.">                boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada()!= null ?request.getDataEntrada():reservaModificada.getDataEntrada(), request.getDataSaida()!= null ?request.getDataSaida():reservaModificada.getDataSaida(),reservaModificada);</span>
-<span class="nc bnc" id="L115" title="All 2 branches missed.">                if (hasConflicts) {</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">        if(optionalReserva.isPresent()){</span>
+<span class="fc" id="L112">            Reserva reservaModificada = optionalReserva.get();</span>
+<span class="pc bpc" id="L113" title="3 of 4 branches missed.">            if (request.getDataEntrada() != null ||request.getDataSaida() != null) {</span>
+<span class="pc bpc" id="L114" title="2 of 4 branches missed.">                boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada()!= null ?request.getDataEntrada():reservaModificada.getDataEntrada(), request.getDataSaida()!= null ?request.getDataSaida():reservaModificada.getDataSaida(),reservaModificada);</span>
+<span class="pc bpc" id="L115" title="1 of 2 branches missed.">                if (hasConflicts) {</span>
 <span class="nc" id="L116">                    return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;O quarto já está reservado para as datas especificadas&quot;);</span>
                 }
-<span class="nc bnc" id="L118" title="All 4 branches missed.">                boolean dataValida = reservaService.validaData(request.getDataEntrada()!= null ?request.getDataEntrada():reservaModificada.getDataEntrada(), request.getDataSaida()!= null ?request.getDataSaida():reservaModificada.getDataSaida());</span>
-<span class="nc bnc" id="L119" title="All 2 branches missed.">                if (!dataValida) {</span>
+<span class="pc bpc" id="L118" title="2 of 4 branches missed.">                boolean dataValida = reservaService.validaData(request.getDataEntrada()!= null ?request.getDataEntrada():reservaModificada.getDataEntrada(), request.getDataSaida()!= null ?request.getDataSaida():reservaModificada.getDataSaida());</span>
+<span class="pc bpc" id="L119" title="1 of 2 branches missed.">                if (!dataValida) {</span>
 <span class="nc" id="L120">                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.&quot;);</span>
                 }
             }
-<span class="nc bnc" id="L123" title="All 2 branches missed.">            if (request.getDataEntrada() != null) {</span>
-<span class="nc" id="L124">                reservaModificada.setDataEntrada(request.getDataEntrada());</span>
-<span class="nc" id="L125">                reservaModificada.setValorTotalReserva();</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">            if (request.getDataEntrada() != null) {</span>
+<span class="fc" id="L124">                reservaModificada.setDataEntrada(request.getDataEntrada());</span>
+<span class="fc" id="L125">                reservaModificada.setValorTotalReserva();</span>
             }
-<span class="nc bnc" id="L127" title="All 2 branches missed.">            if (request.getDataSaida() != null) {</span>
-<span class="nc" id="L128">                reservaModificada.setDataSaida(request.getDataSaida());</span>
-<span class="nc" id="L129">                reservaModificada.setValorTotalReserva();</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">            if (request.getDataSaida() != null) {</span>
+<span class="fc" id="L128">                reservaModificada.setDataSaida(request.getDataSaida());</span>
+<span class="fc" id="L129">                reservaModificada.setValorTotalReserva();</span>
             }
-<span class="nc bnc" id="L131" title="All 2 branches missed.">            if (request.getNumeroHospedes() != null) {</span>
-<span class="nc" id="L132">                reservaModificada.setNumeroHospedes(request.getNumeroHospedes());</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">            if (request.getNumeroHospedes() != null) {</span>
+<span class="fc" id="L132">                reservaModificada.setNumeroHospedes(request.getNumeroHospedes());</span>
             }
-<span class="nc bnc" id="L134" title="All 2 branches missed.">            if (idQuarto != null) {</span>
-<span class="nc" id="L135">                Quarto quarto = quartoRepository.findById(idQuarto).orElse(null);</span>
-<span class="nc bnc" id="L136" title="All 2 branches missed.">                if (quarto == null) {</span>
+<span class="pc bpc" id="L134" title="1 of 2 branches missed.">            if (idQuarto != null) {</span>
+<span class="fc" id="L135">                Quarto quarto = quartoRepository.findById(idQuarto).orElse(null);</span>
+<span class="pc bpc" id="L136" title="1 of 2 branches missed.">                if (quarto == null) {</span>
 <span class="nc" id="L137">                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Quarto não encontrado&quot;);</span>
                 }
-<span class="nc" id="L139">                reservaModificada.setQuarto(quarto);</span>
-<span class="nc" id="L140">                reservaModificada.setValorTotalReserva();</span>
+<span class="fc" id="L139">                reservaModificada.setQuarto(quarto);</span>
+<span class="fc" id="L140">                reservaModificada.setValorTotalReserva();</span>
 
             }
-<span class="nc bnc" id="L143" title="All 2 branches missed.">            if (idCliente != null) {</span>
-<span class="nc" id="L144">                Cliente cliente = clienteRepository.findById(idCliente).orElse(null);</span>
-<span class="nc bnc" id="L145" title="All 2 branches missed.">                if(cliente==null){</span>
+<span class="pc bpc" id="L143" title="1 of 2 branches missed.">            if (idCliente != null) {</span>
+<span class="fc" id="L144">                Cliente cliente = clienteRepository.findById(idCliente).orElse(null);</span>
+<span class="pc bpc" id="L145" title="1 of 2 branches missed.">                if(cliente==null){</span>
 <span class="nc" id="L146">                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;Cliente não encontrado&quot;);</span>
                 }
-<span class="nc" id="L148">                reservaModificada.setCliente(cliente);</span>
+<span class="fc" id="L148">                reservaModificada.setCliente(cliente);</span>
             }
-<span class="nc bnc" id="L150" title="All 2 branches missed.">            if (request.getStatusConfirmada() != null) {</span>
-<span class="nc" id="L151">                reservaModificada.setStatusConfirmada(request.getStatusConfirmada());</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">            if (request.getStatusConfirmada() != null) {</span>
+<span class="fc" id="L151">                reservaModificada.setStatusConfirmada(request.getStatusConfirmada());</span>
             }
-<span class="nc bnc" id="L153" title="All 2 branches missed.">            if (request.getFormaPagamento() != null) {</span>
-<span class="nc" id="L154">                reservaModificada.setFormaPagamento(request.getFormaPagamento());</span>
+<span class="pc bpc" id="L153" title="1 of 2 branches missed.">            if (request.getFormaPagamento() != null) {</span>
+<span class="fc" id="L154">                reservaModificada.setFormaPagamento(request.getFormaPagamento());</span>
             }
-<span class="nc" id="L156">            reservaModificada.setDataAtualizacaoReserva();</span>
-<span class="nc" id="L157">            Reserva reservaAtualizada = reservaRepository.save(reservaModificada);</span>
-<span class="nc" id="L158">            return ResponseEntity.ok(reservaAtualizada);</span>
+<span class="fc" id="L156">            reservaModificada.setDataAtualizacaoReserva();</span>
+<span class="fc" id="L157">            Reserva reservaAtualizada = reservaRepository.save(reservaModificada);</span>
+<span class="fc" id="L158">            return ResponseEntity.ok(reservaAtualizada);</span>
 
         } else {
-<span class="nc" id="L161">            Map&lt;String, String&gt; errorResponse = new HashMap&lt;&gt;();</span>
-<span class="nc" id="L162">            errorResponse.put(&quot;mensagem&quot;, &quot;Não foi possível localizar a reserva pelo ID&quot;);</span>
-<span class="nc" id="L163">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+<span class="fc" id="L161">            Map&lt;String, String&gt; errorResponse = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L162">            errorResponse.put(&quot;mensagem&quot;, &quot;Não foi possível localizar a reserva pelo ID&quot;);</span>
+<span class="fc" id="L163">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
         }
     }
     @DeleteMapping(&quot;/reserva/{id}&quot;)
     public ResponseEntity&lt;?&gt; deletarReserva(@PathVariable Integer id) {
-<span class="nc bnc" id="L168" title="All 2 branches missed.">        if (reservaRepository.existsById(id)) {</span>
-<span class="nc" id="L169">            reservaRepository.deleteById(id);</span>
-<span class="nc" id="L170">            return ResponseEntity.ok(&quot;Reserva excluída com sucesso.&quot;);</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">        if (reservaRepository.existsById(id)) {</span>
+<span class="fc" id="L169">            reservaRepository.deleteById(id);</span>
+<span class="fc" id="L170">            return ResponseEntity.ok(&quot;Reserva excluída com sucesso.&quot;);</span>
         } else {
-<span class="nc" id="L172">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Reserva não encontrado.&quot;);</span>
+<span class="fc" id="L172">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(&quot;Reserva não encontrado.&quot;);</span>
         }
     }
-//    @PutMapping(&quot;/reserva/{id}&quot;)
-//    public ResponseEntity&lt;?&gt; alterarTudoReserva(
-//            @PathVariable Integer id,
-//            @RequestParam Integer idQuarto,
-//            @RequestParam Integer idCliente,
-//            @RequestBody ReservaRequest request){
-//
-//        Optional&lt;Reserva&gt; optionalReserva = reservaRepository.findById(id);
-//
-//        if(optionalReserva.isPresent()){
-//            Reserva reservaModificada = optionalReserva.get();
-//            Boolean hasConflicts = reservaService.verificaConflitosReserva(idQuarto, request.getDataEntrada(), request.getDataSaida(),reservaModificada);
-//            if (hasConflicts) {
-//                return ResponseEntity.status(HttpStatus.CONFLICT).body(&quot;O quarto já está reservado para as datas especificadas&quot;);
-//            }
-//            boolean dataValida = reservaService.validaData(request.getDataEntrada(), request.getDataSaida());
-//            if (!dataValida) {
-//                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(&quot;A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.&quot;);
-//            }
-//            reservaModificada.setIdentificadorReserva(request.getIdentificadorReserva());
-//            if(request.getDataRealizacaoReserva()==null){
-//                reservaModificada.setDataRealizacaoReserva();
-//            }else {
-//                reservaModificada.setDataRealizacaoReserva(request.getDataRealizacaoReserva());
-//            }
-//            reservaModificada.setDataAtualizacaoReserva();
-//            reservaModificada.setDataEntrada(request.getDataEntrada());
-//            reservaModificada.setDataSaida(request.getDataSaida());
-//            reservaModificada.setNumeroHospedes(request.getNumeroHospedes());
-//            Quarto quarto = quartoRepository.findById(idQuarto).orElseThrow(() -&gt; new RuntimeException(&quot;Quarto não encontrado&quot;));;
-//            reservaModificada.setQuarto(quarto);
-//            reservaModificada.setValorTotalReserva();
-//            Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(() -&gt; new RuntimeException(&quot;Cliente não encontrado&quot;));;
-//            reservaModificada.setCliente(cliente);
-//            reservaModificada.setStatusConfirmada(request.getStatusConfirmada());
-//            Reserva reservaAtualizada = reservaRepository.save(reservaModificada);
-//            return ResponseEntity.ok(reservaAtualizada);
-//        } else {
-//            Map&lt;String, String&gt; errorResponse = new HashMap&lt;&gt;();
-//            errorResponse.put(&quot;mensagem&quot;, &quot;Não foi possível localizar a reserva pelo ID&quot;);
-//            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);
-//        }
-//    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

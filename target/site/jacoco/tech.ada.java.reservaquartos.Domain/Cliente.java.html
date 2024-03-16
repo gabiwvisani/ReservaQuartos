@@ -13,7 +13,7 @@ import javax.validation.constraints.Pattern;
 @Entity
 <span class="fc" id="L14">@Setter</span>
 @Getter
-<span class="nc bnc" id="L16" title="All 62 branches missed.">@EqualsAndHashCode</span>
+<span class="pc bpc" id="L16" title="37 of 62 branches missed.">@EqualsAndHashCode</span>
 <span class="fc" id="L17">@NoArgsConstructor</span>
 public class Cliente {
     @Id
@@ -36,7 +36,7 @@ public class Cliente {
 <span class="fc" id="L36">    }</span>
 
     public static String validarCPF(String cpf) {
-<span class="pc bpc" id="L39" title="2 of 6 branches missed.">        if (cpf == null || cpf.length() != 11 || !cpf.chars().allMatch(Character::isDigit)) {</span>
+<span class="pc bpc" id="L39" title="1 of 6 branches missed.">        if (cpf == null || cpf.length() != 11 || !cpf.chars().allMatch(Character::isDigit)) {</span>
 <span class="fc" id="L40">            return &quot;O CPF deve conter exatamente 11 dígitos numéricos.&quot;;</span>
         }
 <span class="fc" id="L42">        return null;</span>

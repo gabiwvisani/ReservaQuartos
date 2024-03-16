@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tech.ada.java.reservaquartos.Service.ClienteServiceTest
 -------------------------------------------------------------------------------
-Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.007 s -- in tech.ada.java.reservaquartos.Service.ClienteServiceTest
+Tests run: 2, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.009 s -- in tech.ada.java.reservaquartos.Service.ClienteServiceTest

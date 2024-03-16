@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 public class ClienteTest {
 
@@ -57,5 +58,20 @@ public class ClienteTest {
     @Test
     public void validarCPFTest2(){
         assertEquals(Cliente.validarCPF("152125"), "O CPF deve conter exatamente 11 dígitos numéricos.");
+    }
+    @Test
+    public void testValidarCPFNull() {
+        assertEquals("O CPF deve conter exatamente 11 dígitos numéricos.", Cliente.validarCPF(null));
+    }
+    @Test
+    public void testEquals() {
+        assertEquals(cliente1, cliente2);
+        assertNotEquals(cliente1, cliente3);
+    }
+
+    @Test
+    public void testHashCode() {
+        assertEquals(cliente1.hashCode(), cliente2.hashCode());
+        assertNotEquals(cliente1.hashCode(), cliente3.hashCode());
     }
 }

@@ -205,4 +205,8 @@ public class ReservaTest {
         assertEquals(reserva.hashCode(), outraReserva.hashCode());
         assertNotEquals(reserva.hashCode(), reservaComIdentificadorNulo.hashCode());
     }
+    @Test
+    public void testBigDecimal() {
+        assertTrue(quarto.getPrecoPorNoite() instanceof BigDecimal);
+    }
 }

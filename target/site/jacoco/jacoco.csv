@@ -8,7 +8,7 @@ ReservaQuartos,tech.ada.java.reservaquartos,ReservaQuartosApplication,5,7,0,0,2,
 ReservaQuartos,tech.ada.java.reservaquartos.Configuration,Security,0,44,0,0,0,9,0,5,0,5
 ReservaQuartos,tech.ada.java.reservaquartos.Request,ClienteRequest,0,45,0,0,0,8,0,13,0,13
 ReservaQuartos,tech.ada.java.reservaquartos.Request,QuartoRequest,0,38,0,0,0,7,0,11,0,11
-ReservaQuartos,tech.ada.java.reservaquartos.Request,ReservaRequest,54,68,0,0,6,20,15,8,15,8
+ReservaQuartos,tech.ada.java.reservaquartos.Request,ReservaRequest,0,80,0,0,0,13,0,23,0,23
 ReservaQuartos,tech.ada.java.reservaquartos.Request,AlteraValorQuartoRequest,0,9,0,0,0,1,0,2,0,2
 ReservaQuartos,tech.ada.java.reservaquartos.Service,ClienteService,0,24,0,2,0,7,0,3,0,2
 ReservaQuartos,tech.ada.java.reservaquartos.Service,ReservaService,1,41,2,6,0,11,2,5,0,3

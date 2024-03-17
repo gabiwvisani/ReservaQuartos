@@ -103,10 +103,19 @@ class ReservaServiceTest {
         assertFalse(result);
     }
 
+    @Test
+    void validaDataTestTrue() {
+        LocalDate dataEntrada = LocalDate.of(2024, 4, 15);
+        LocalDate dataSaida = LocalDate.of(2024, 4, 16);
+        boolean resultado = reservaService.validaData(dataEntrada, dataSaida);
+        assertTrue(resultado);
+    }
 
     @Test
-    void validaDataTest() {
-        LocalDate hoje = LocalDate.now();
-
+    void validaDataTestFalse() {
+        LocalDate dataEntrada = LocalDate.of(2023, 4, 15);
+        LocalDate dataSaida = LocalDate.of(2024, 4, 16);
+        boolean resultado = reservaService.validaData(dataEntrada, dataSaida);
+        assertFalse(resultado);
     }
 }

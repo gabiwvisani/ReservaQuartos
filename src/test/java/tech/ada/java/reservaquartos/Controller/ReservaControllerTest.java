@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
@@ -141,6 +142,44 @@ public class ReservaControllerTest {
         verify(reservaRepository, times(1)).save(any(Reserva.class));
     }
     @Test
+    public void testCadastrarReservaQuandoQuartoNaoExiste() {
+        when(quartoRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> responseEntity = reservaController.cadastrarQuarto(1, 1, reserva1);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+    @Test
+    public void testCadastrarReservaQuandoClienteNaoExiste() {
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(clienteRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> responseEntity = reservaController.cadastrarQuarto(1, 1, reserva1);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+    @Test
+    public void testCadastrarReservaQuandoHaConflitos() {
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
+        when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(true);
+
+        ResponseEntity<?> responseEntity = reservaController.cadastrarQuarto(1, 1, reserva1);
+
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+    }
+    @Test
+    public void testCadastrarReservaQuandoDatasInvalidas() {
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
+        when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(false);
+        when(reservaService.validaData(any(), any())).thenReturn(false);
+
+        ResponseEntity<?> responseEntity = reservaController.cadastrarQuarto(1, 1, reserva1);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+    }
+    @Test
     public void testBuscarReservaExistentePorId() {
         when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2));
         ResponseEntity<?> responseEntity = reservaController.findReservaById(1);
@@ -179,6 +218,53 @@ public class ReservaControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         verify(reservaRepository, never()).save(any(Reserva.class));
     }
+    @Test
+    public void testAlterarReservaQuandoDatasConflitantes() {
+        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2));
+        when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(true);
+
+        ResponseEntity<?> responseEntity = reservaController.alterarReserva(1, 1, 1, reserva1);
+
+        assertEquals(HttpStatus.CONFLICT, responseEntity.getStatusCode());
+        verify(reservaRepository, never()).save(any(Reserva.class));
+    }
+    @Test
+    public void testAlterarReservaQuandoQuartoNaoExiste() {
+        reserva2.setIdentificadorReserva(1);
+        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2)); // Stubbing para simular uma reserva existente
+        when(reservaService.validaData(any(), any())).thenReturn(true);
+        when(quartoRepository.findById(1)).thenReturn(Optional.empty()); // Stubbing para simular um quarto não encontrado
+
+        ResponseEntity<?> responseEntity = reservaController.alterarReserva(1, 1, 1, reserva1);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Quarto não encontrado", responseEntity.getBody());
+
+    }
+    @Test
+    public void testAlterarReservaQuandoClienteNaoExiste() {
+        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2));
+        when(reservaService.validaData(any(), any())).thenReturn(true);
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(clienteRepository.findById(1)).thenReturn(Optional.empty());
+
+        ResponseEntity<?> responseEntity = reservaController.alterarReserva(1, 1, 1, reserva1);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("Cliente não encontrado", responseEntity.getBody());
+    }
+    @Test
+    public void testAlterarReservaQuandoDataEntradaMaiorQueDataSaida() {
+        reserva1.setDataEntrada(LocalDate.of(2024, 4, 15));
+        reserva1.setDataSaida(LocalDate.of(2024, 4, 14));
+        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2));
+
+        ResponseEntity<?> responseEntity = reservaController.alterarReserva(1, 1, 1, reserva1);
+
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        assertEquals("A data de entrada deve ser igual ou maior a data de hoje e a data de saída deve ser maior ou igual a data de entrada.", responseEntity.getBody());
+    }
+
 
     @Test
     public void testDeletarReservaExistente() {

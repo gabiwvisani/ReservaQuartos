@@ -16,18 +16,18 @@ public class ReservaService {
 <span class="fc" id="L16">    }</span>
 
     public boolean verificaConflitosReserva(Integer idQuarto, LocalDate dataEntrada, LocalDate dataSaida, Reserva reserva) {
-<span class="nc" id="L19">        List&lt;Reserva&gt; conflitos = reservaRepository.encontraConflitosReserva(idQuarto, dataEntrada, dataSaida);</span>
-<span class="nc bnc" id="L20" title="All 2 branches missed.">        if(reserva !=null) {</span>
-<span class="nc" id="L21">            conflitos.remove(reserva);</span>
+<span class="fc" id="L19">        List&lt;Reserva&gt; conflitos = reservaRepository.encontraConflitosReserva(idQuarto, dataEntrada, dataSaida);</span>
+<span class="pc bpc" id="L20" title="1 of 2 branches missed.">        if(reserva !=null) {</span>
+<span class="fc" id="L21">            conflitos.remove(reserva);</span>
         }
-<span class="nc bnc" id="L23" title="All 2 branches missed.">        return !conflitos.isEmpty();</span>
+<span class="fc bfc" id="L23" title="All 2 branches covered.">        return !conflitos.isEmpty();</span>
     }
     public boolean validaData(LocalDate dataEntrada, LocalDate dataSaida) {
-<span class="nc" id="L26">        LocalDate hoje = LocalDate.now();</span>
-<span class="nc bnc" id="L27" title="All 2 branches missed.">        if (dataEntrada.isBefore(hoje)) {</span>
-<span class="nc" id="L28">            return false;</span>
+<span class="fc" id="L26">        LocalDate hoje = LocalDate.now();</span>
+<span class="fc bfc" id="L27" title="All 2 branches covered.">        if (dataEntrada.isBefore(hoje)) {</span>
+<span class="fc" id="L28">            return false;</span>
         }
-<span class="nc bnc" id="L30" title="All 2 branches missed.">        return !dataSaida.isBefore(dataEntrada);</span>
+<span class="pc bpc" id="L30" title="1 of 2 branches missed.">        return !dataSaida.isBefore(dataEntrada);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

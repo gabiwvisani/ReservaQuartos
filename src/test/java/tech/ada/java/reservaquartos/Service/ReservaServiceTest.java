@@ -15,6 +15,7 @@ import tech.ada.java.reservaquartos.Request.ReservaRequest;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -96,15 +97,10 @@ class ReservaServiceTest {
     }
     @Test
     void verificaSemConflitosReservaTest() {
-        List<Reserva> conflitos = new ArrayList<>();
-        conflitos.add(reserva1);
-        when(reservaRepository.encontraConflitosReserva(any(), any(), any())).thenReturn(conflitos);
-
+        when(reservaRepository.encontraConflitosReserva(any(), any(), any())).thenReturn(Collections.emptyList());
         boolean result = reservaService.verificaConflitosReserva(1,LocalDate.of(2024, 4, 18),
                 LocalDate.of(2024, 4, 20),reserva2);
-
-        assertTrue(result);
-
+        assertFalse(result);
     }
 
 

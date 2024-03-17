@@ -10,8 +10,8 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 @Getter
-<span class="pc" id="L13">@Setter</span>
-public class ReservaRequest {
+<span class="fc" id="L13">@Setter</span>
+<span class="fc" id="L14">public class ReservaRequest {</span>
 <span class="fc" id="L15">    private Integer identificadorReserva;</span>
 <span class="fc" id="L16">    private  LocalDateTime dataRealizacaoReserva;</span>
 <span class="fc" id="L17">    private  LocalDateTime dataAtualizacaoReserva;</span>
@@ -23,20 +23,20 @@ public class ReservaRequest {
 <span class="fc" id="L23">    private  Boolean statusConfirmada;</span>
 <span class="fc" id="L24">    private  BigDecimal valorTotalReserva;</span>
 <span class="fc" id="L25">    private Reserva.FormaPagamento formaPagamento;</span>
-<span class="fc" id="L26">    public ReservaRequest( LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada,  Reserva.FormaPagamento formaPagamento) {</span>
-<span class="fc" id="L27">        this.dataRealizacaoReserva = LocalDateTime.now();</span>
-<span class="fc" id="L28">        this.dataAtualizacaoReserva = LocalDateTime.now();</span>
-<span class="fc" id="L29">        this.dataEntrada = dataEntrada;</span>
-<span class="fc" id="L30">        this.dataSaida = dataSaida;</span>
-<span class="fc" id="L31">        this.numeroHospedes = numeroHospedes;</span>
-<span class="fc" id="L32">        this.quarto = quarto;</span>
-<span class="fc" id="L33">        this.cliente = cliente;</span>
-<span class="fc" id="L34">        this.statusConfirmada = statusConfirmada;</span>
-<span class="fc" id="L35">        BigDecimal diferencaDias = BigDecimal.valueOf(dataSaida.toEpochDay() - dataEntrada.toEpochDay());</span>
-<span class="fc" id="L36">        BigDecimal precoPorNoite = quarto.getPrecoPorNoite();</span>
-<span class="fc" id="L37">        this.valorTotalReserva = diferencaDias.multiply(precoPorNoite);</span>
-<span class="fc" id="L38">        this.formaPagamento= formaPagamento;</span>
-<span class="fc" id="L39">    }</span>
+//    public ReservaRequest( LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada,  Reserva.FormaPagamento formaPagamento) {
+//        this.dataRealizacaoReserva = LocalDateTime.now();
+//        this.dataAtualizacaoReserva = LocalDateTime.now();
+//        this.dataEntrada = dataEntrada;
+//        this.dataSaida = dataSaida;
+//        this.numeroHospedes = numeroHospedes;
+//        this.quarto = quarto;
+//        this.cliente = cliente;
+//        this.statusConfirmada = statusConfirmada;
+//        BigDecimal diferencaDias = BigDecimal.valueOf(dataSaida.toEpochDay() - dataEntrada.toEpochDay());
+//        BigDecimal precoPorNoite = quarto.getPrecoPorNoite();
+//        this.valorTotalReserva = diferencaDias.multiply(precoPorNoite);
+//        this.formaPagamento= formaPagamento;
+//    }
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>

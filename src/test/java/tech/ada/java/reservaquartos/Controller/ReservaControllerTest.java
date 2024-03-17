@@ -103,14 +103,14 @@ public class ReservaControllerTest {
         cliente2.setIdentificadorCliente(2);
 
 
-        reserva1 = new ReservaRequest(
-                LocalDate.of(2024, 4, 14),
-                LocalDate.of(2024, 4, 15),
-                3,
-                quarto1,
-                cliente1,
-                true,
-                Reserva.FormaPagamento.CARTAO_DE_CREDITO);
+        reserva1 = new ReservaRequest();
+        reserva1.setDataEntrada(LocalDate.of(2024, 4, 14));
+        reserva1.setDataSaida( LocalDate.of(2024, 4, 15));
+        reserva1.setNumeroHospedes(        3);
+        reserva1.setQuarto( quarto1);
+        reserva1.setCliente( cliente1);
+        reserva1.setStatusConfirmada(        true);
+        reserva1.setFormaPagamento(       Reserva.FormaPagamento.CARTAO_DE_CREDITO);
         reserva2 = new Reserva(
                 LocalDate.of(2024, 4, 16),
                 LocalDate.of(2024, 4, 17),
@@ -351,7 +351,7 @@ public class ReservaControllerTest {
                         .param("idQuarto","1")
                         .content(objectMapper.writeValueAsString(reserva1)))
                 .andExpect(status().isOk());
- //               .andExpect(jsonPath ("$.dataEntrada", equalTo(reserva1.getDataEntrada())));
+ //              .andExpect(jsonPath ("$.dataEntrada", equalTo(reserva1.getDataEntrada())));
 //                .andExpect(jsonPath("$.dataSaida", equalTo("2024-04-17")))
               //  .andExpect(jsonPath("$.numeroHospedes", equalTo(reserva1.getNumeroHospedes())));
 //                .andExpect(jsonPath("$.statusConfirmada", equalTo(true)))

@@ -21,6 +21,7 @@ import tech.ada.java.reservaquartos.Request.ClienteRequest;
 import tech.ada.java.reservaquartos.Service.ClienteService;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,6 +55,7 @@ class ClienteControllerTest {
     ClienteRequest cliente3 = new ClienteRequest();
     Optional<Cliente> clienteOptional1;
     Optional<Cliente> clienteOptional2;
+    ClienteRequest request = new ClienteRequest();
 
     //String clienteJson;
 
@@ -195,5 +197,46 @@ class ClienteControllerTest {
 
         assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
         assertEquals("Cliente não encontrado.", responseEntity.getBody());
+    }
+
+    @Test
+    public void testBuscarTodosClientesListaVazia() {
+        when(clienteRepository.findAll()).thenReturn(Collections.emptyList());
+        ResponseEntity<?> responseEntity = clienteController.buscarTodosClientes();
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        ErrorResponse errorResponse = (ErrorResponse) responseEntity.getBody();
+        assertEquals("A lista de clientes está vazia", errorResponse.getMessage());
+    }
+    @Test
+    public void testBuscarClientePorCPFClienteNaoEncontrado() {
+        String cpf = "12345678900";
+        when(clienteRepository.findByCpf(cpf)).thenReturn(Optional.empty());
+        ResponseEntity<?> responseEntity = clienteController.buscarClientePorCPF(cpf);
+        assertEquals(HttpStatus.NOT_FOUND, responseEntity.getStatusCode());
+        ErrorResponse errorResponse = (ErrorResponse) responseEntity.getBody();
+        assertEquals("Não foi localizado um cliente com este CPF.", errorResponse.getMessage());
+    }
+
+    @Test
+    public void testCadastrarCpfDuplicado() {
+        String novoCpf = "98765432100";
+        request.setCpf(novoCpf);
+        when(clienteRepository.findById(1)).thenReturn(clienteOptional1);
+        doThrow(new IllegalArgumentException("CPF já cadastrado")).when(clienteService).verificarDuplicidadeCpf(novoCpf);
+        ResponseEntity<?> responseEntity = clienteController.alterarCliente(1, request);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        ErrorResponse errorResponse = (ErrorResponse) responseEntity.getBody();
+        assertEquals("CPF já cadastrado", errorResponse.getMessage());
+    }
+
+    @Test
+    public void testAlterarClienteCPFInvalido() {
+        ClienteRequest request = new ClienteRequest();
+        request.setCpf("ABC");
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(new Cliente()));
+        ResponseEntity<?> responseEntity = clienteController.alterarCliente(1, request);
+        assertEquals(HttpStatus.BAD_REQUEST, responseEntity.getStatusCode());
+        ErrorResponse errorResponse = (ErrorResponse) responseEntity.getBody();
+        assertEquals("O CPF deve conter exatamente 11 dígitos numéricos.", errorResponse.getMessage());
     }
 }

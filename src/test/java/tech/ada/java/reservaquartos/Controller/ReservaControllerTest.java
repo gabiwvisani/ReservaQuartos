@@ -1,10 +1,12 @@
 package tech.ada.java.reservaquartos.Controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -30,11 +32,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.hamcrest.Matchers.equalTo;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static tech.ada.java.reservaquartos.Controller.ClienteControllerTest.asJsonString;
 
 @ExtendWith(MockitoExtension.class)
 public class ReservaControllerTest {
@@ -60,6 +64,7 @@ public class ReservaControllerTest {
     private Quarto quarto2;
     private Cliente cliente2;
     private List<Reserva> listaReservas = new ArrayList<>();
+
 
     @BeforeEach
     public void setup() {
@@ -134,11 +139,18 @@ public class ReservaControllerTest {
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
         when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(false);
         when(reservaService.validaData(any(), any())).thenReturn(true);
-        when(modelMapper.map(reserva1, Reserva.class)).thenReturn(reserva2);
+        when(modelMapper.map(reserva1, Reserva.class)).thenReturn(reserva3);
+        when(reservaRepository.save(any())).thenAnswer(invocation -> invocation.getArgument(0));
+
 
         ResponseEntity<?> responseEntity = reservaController.cadastrarQuarto(1, 1, reserva1);
 
         assertEquals(HttpStatus.CREATED, responseEntity.getStatusCode());
+        assertEquals(true, ((Reserva) responseEntity.getBody()).getStatusConfirmada());
+        assertEquals(cliente1, ((Reserva) responseEntity.getBody()).getCliente());
+        assertEquals(quarto1, ((Reserva) responseEntity.getBody()).getQuarto());
+        assertEquals(3, ((Reserva) responseEntity.getBody()).getNumeroHospedes());
+        assertEquals(reserva1.getFormaPagamento(), ((Reserva) responseEntity.getBody()).getFormaPagamento());
         verify(reservaRepository, times(1)).save(any(Reserva.class));
     }
     @Test
@@ -199,15 +211,20 @@ public class ReservaControllerTest {
 
     @Test
     public void testAlterarReservaExistente() {
-        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2));
+        when(reservaRepository.findById(2)).thenReturn(Optional.of(reserva2));
         when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
         when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
         when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(false);
         when(reservaService.validaData(any(), any())).thenReturn(true);
 
-        ResponseEntity<?> responseEntity = reservaController.alterarReserva(1, 1, 1, reserva1);
+        ResponseEntity<?> responseEntity = reservaController.alterarReserva(2, 1, 1, reserva1);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
+//       // assertEquals(true, reservaRepository.findById(1).getStatusConfirmada());
+//        assertEquals(cliente1, ((Reserva) responseEntity.getHeaders()).getCliente());
+//        assertEquals(quarto1, ((Reserva) responseEntity.getBody()).getQuarto());
+//        assertEquals(3, ((Reserva) responseEntity.getBody()).getNumeroHospedes());
+//        assertEquals(reserva1.getFormaPagamento(), ((Reserva) responseEntity.getBody()).getFormaPagamento());
         verify(reservaRepository, times(1)).save(any(Reserva.class));
     }
 
@@ -294,5 +311,56 @@ public class ReservaControllerTest {
                         contentType(MediaType.APPLICATION_JSON)).
                 andExpect(content().json(expectedJson));
         verify(reservaRepository, times(1)).findAll();
+    }
+    @Test
+    public void testCadastrarReservaSucessoComMockMvc() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
+        when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(false);
+        when(reservaService.validaData(any(), any())).thenReturn(true);
+        when(modelMapper.map(any(ReservaRequest.class), eq(Reserva.class))).thenReturn(reserva3);
+        when(reservaRepository.save(any(Reserva.class))).thenReturn(reserva3);
+
+        mockMvc.perform(MockMvcRequestBuilders.post("/reserva")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("idCliente","1")
+                        .param("idQuarto","1")
+                        .content(objectMapper.writeValueAsString(reserva1)))
+                .andExpect(status().isCreated())
+                .andExpect(jsonPath("$.statusConfirmada", equalTo(true)));
+
+        verify(reservaRepository, times(1)).save(any(Reserva.class));
+    }
+    @Test
+    public void testAlterarReservaExistenteComMockMvc() throws Exception {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(new JavaTimeModule());
+
+        when(reservaRepository.findById(2)).thenReturn(Optional.of(reserva2));
+        when(quartoRepository.findById(1)).thenReturn(Optional.of(quarto1));
+        when(clienteRepository.findById(1)).thenReturn(Optional.of(cliente1));
+        when(reservaService.verificaConflitosReserva(anyInt(), any(), any(), any())).thenReturn(false);
+        when(reservaService.validaData(any(), any())).thenReturn(true);
+
+        mockMvc.perform(MockMvcRequestBuilders.patch("/reserva/{id}", 2)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .param("idCliente","1")
+                        .param("idQuarto","1")
+                        .content(objectMapper.writeValueAsString(reserva1)))
+                .andExpect(status().isOk());
+ //               .andExpect(jsonPath ("$.dataEntrada", equalTo(reserva1.getDataEntrada())));
+//                .andExpect(jsonPath("$.dataSaida", equalTo("2024-04-17")))
+              //  .andExpect(jsonPath("$.numeroHospedes", equalTo(reserva1.getNumeroHospedes())));
+//                .andExpect(jsonPath("$.statusConfirmada", equalTo(true)))
+//                .andExpect(jsonPath("$.formaPagamento", equalTo("DINHEIRO")));
+
+     //   ArgumentCaptor<Reserva> argumentCaptor = ArgumentCaptor.forClass(Reserva.class);
+        //verify(reservaRepository, times(1)).save(argumentCaptor.capture());
+     //   Reserva reservaAtualizada = argumentCaptor.getValue();
+      //  assertEquals(reserva2, reservaAtualizada);
+        verify(reservaRepository, times(1)).save(any(Reserva.class));
     }
 }

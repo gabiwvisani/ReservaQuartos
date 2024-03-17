@@ -12,16 +12,16 @@ import java.time.LocalDateTime;
 @Getter
 <span class="pc" id="L13">@Setter</span>
 public class ReservaRequest {
-<span class="nc" id="L15">    private Integer identificadorReserva;</span>
-<span class="nc" id="L16">    private  LocalDateTime dataRealizacaoReserva;</span>
-<span class="nc" id="L17">    private  LocalDateTime dataAtualizacaoReserva;</span>
+<span class="fc" id="L15">    private Integer identificadorReserva;</span>
+<span class="fc" id="L16">    private  LocalDateTime dataRealizacaoReserva;</span>
+<span class="fc" id="L17">    private  LocalDateTime dataAtualizacaoReserva;</span>
 <span class="fc" id="L18">    private   LocalDate dataEntrada;</span>
 <span class="fc" id="L19">    private   LocalDate dataSaida;</span>
 <span class="fc" id="L20">    private Integer numeroHospedes;</span>
-<span class="nc" id="L21">    private Quarto quarto;</span>
-<span class="nc" id="L22">    private Cliente cliente;</span>
+<span class="fc" id="L21">    private Quarto quarto;</span>
+<span class="fc" id="L22">    private Cliente cliente;</span>
 <span class="fc" id="L23">    private  Boolean statusConfirmada;</span>
-<span class="nc" id="L24">    private  BigDecimal valorTotalReserva;</span>
+<span class="fc" id="L24">    private  BigDecimal valorTotalReserva;</span>
 <span class="fc" id="L25">    private Reserva.FormaPagamento formaPagamento;</span>
 <span class="fc" id="L26">    public ReservaRequest( LocalDate dataEntrada, LocalDate dataSaida, Integer numeroHospedes, Quarto quarto, Cliente cliente, Boolean statusConfirmada,  Reserva.FormaPagamento formaPagamento) {</span>
 <span class="fc" id="L27">        this.dataRealizacaoReserva = LocalDateTime.now();</span>

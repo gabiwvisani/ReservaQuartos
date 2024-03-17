@@ -6,8 +6,11 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
+import static org.hibernate.validator.internal.util.Contracts.assertNotNull;
 import static org.junit.jupiter.api.Assertions.*;
+import static tech.ada.java.reservaquartos.Domain.Reserva.FormaPagamento.*;
 
 public class ReservaTest {
 
@@ -15,6 +18,8 @@ public class ReservaTest {
     private Quarto quarto;
     private Cliente cliente;
     private Reserva outraReserva;
+    private Cliente cliente2 = new Cliente();
+    private Quarto quarto2 = new Quarto();
 
     @BeforeEach
     public void setup() {
@@ -30,7 +35,7 @@ public class ReservaTest {
                 quarto,
                 cliente,
                 true,
-                Reserva.FormaPagamento.CARTAO_DE_CREDITO);
+                CARTAO_DE_CREDITO);
         outraReserva = new Reserva(
                 LocalDate.of(2024, 3, 17),
                 LocalDate.of(2024, 3, 19),
@@ -38,9 +43,54 @@ public class ReservaTest {
                 quarto,
                 cliente,
                 true,
-                Reserva.FormaPagamento.CARTAO_DE_CREDITO);
+                CARTAO_DE_CREDITO);
         outraReserva.setIdentificadorReserva(1);
         reserva.setIdentificadorReserva(1);
+
+        cliente2 = new Cliente(
+                "Maria Silva",
+                "12545458954",
+                "27150-574",
+                "Rua Prefeito Alguma Coisa",
+                "(52) 99885-4612",
+                "mariasilva@gmail.com");
+
+        quarto2 = new Quarto(
+                2,
+                2,
+                "Quarto com ar condicionado",
+                new BigDecimal("200"),
+                Quarto.TipoQuarto.SUPERIOR);
+    }
+    @Test
+    public void testConstructorReserva() {
+        assertNotNull(reserva);
+        assertEquals(LocalDate.of(2024, 3, 17), reserva.getDataEntrada());
+        assertEquals(LocalDate.of(2024, 3, 19), reserva.getDataSaida());
+        assertEquals(2, reserva.getNumeroHospedes());
+        assertEquals(quarto, reserva.getQuarto());
+        assertEquals(cliente, reserva.getCliente());
+        assertEquals(true, reserva.getStatusConfirmada());
+        assertEquals(Reserva.FormaPagamento.CARTAO_DE_CREDITO, reserva.getFormaPagamento());
+    }
+
+    @Test
+    public void testGetQuarto() {
+        assertEquals(quarto, reserva.getQuarto());
+    }
+
+    @Test
+    public void testGetQuarto2() {
+        assertNotEquals(quarto2, reserva.getQuarto());
+    }
+
+    @Test
+    public void testGetCliente() {
+        assertEquals(cliente, reserva.getCliente());
+    }
+    @Test
+    public void testGetCliente2() {
+        assertNotEquals(cliente2, reserva.getCliente());
     }
 
     @Test

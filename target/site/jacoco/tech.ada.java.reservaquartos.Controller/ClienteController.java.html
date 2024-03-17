@@ -57,9 +57,9 @@ public class ClienteController {
     @GetMapping(&quot;/cliente&quot;)
     public ResponseEntity&lt;?&gt; buscarTodosClientes() {
 <span class="fc" id="L59">        List&lt;Cliente&gt; listaTodosClientes = clienteRepository.findAll();</span>
-<span class="pc bpc" id="L60" title="1 of 2 branches missed.">        if (listaTodosClientes.isEmpty()) {</span>
-<span class="nc" id="L61">            ErrorResponse errorResponse = new ErrorResponse(&quot;A lista de clientes está vazia&quot;);</span>
-<span class="nc" id="L62">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">        if (listaTodosClientes.isEmpty()) {</span>
+<span class="fc" id="L61">            ErrorResponse errorResponse = new ErrorResponse(&quot;A lista de clientes está vazia&quot;);</span>
+<span class="fc" id="L62">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
         }
 <span class="fc" id="L64">        return ResponseEntity.ok(listaTodosClientes);</span>
       }
@@ -68,11 +68,11 @@ public class ClienteController {
     public ResponseEntity&lt;?&gt; buscarClientePorCPF(@PathVariable String cpf) {
 <span class="fc" id="L69">        Optional&lt;Cliente&gt; clienteOptional = clienteRepository.findByCpf(cpf);</span>
 
-<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (clienteOptional.isPresent()) {</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">        if (clienteOptional.isPresent()) {</span>
 <span class="fc" id="L72">            return ResponseEntity.ok(clienteOptional.get());</span>
         } else {
-<span class="nc" id="L74">            ErrorResponse errorResponse = new ErrorResponse(&quot;Não foi localizado um cliente com este CPF.&quot;);</span>
-<span class="nc" id="L75">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
+<span class="fc" id="L74">            ErrorResponse errorResponse = new ErrorResponse(&quot;Não foi localizado um cliente com este CPF.&quot;);</span>
+<span class="fc" id="L75">            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorResponse);</span>
         }
     }
 
@@ -86,7 +86,7 @@ public class ClienteController {
 <span class="fc bfc" id="L86" title="All 2 branches covered.">        if (optionalCliente.isPresent()) {</span>
 <span class="fc" id="L87">            Cliente clienteModificado = optionalCliente.get();</span>
 
-<span class="pc bpc" id="L89" title="1 of 2 branches missed.">            if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">            if (request.getNomeCompleto() != null) clienteModificado.setNomeCompleto(request.getNomeCompleto());</span>
 <span class="pc bpc" id="L90" title="1 of 2 branches missed.">            if (request.getCpf() != null  &amp;&amp;</span>
                    // !request.getCpf().equals(null) //&amp;&amp;
 <span class="pc bpc" id="L92" title="1 of 2 branches missed.">                    !request.getCpf().equals(clienteModificado.getCpf() )</span>
@@ -95,16 +95,16 @@ public class ClienteController {
                 try
                 {
 <span class="fc" id="L97">                    clienteService.verificarDuplicidadeCpf(request.getCpf());</span>
-<span class="nc" id="L98">                } catch (IllegalArgumentException ex) {</span>
-<span class="nc" id="L99">                    ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());</span>
-<span class="nc" id="L100">                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);</span>
+<span class="fc" id="L98">                } catch (IllegalArgumentException ex) {</span>
+<span class="fc" id="L99">                    ErrorResponse errorResponse = new ErrorResponse(ex.getMessage());</span>
+<span class="fc" id="L100">                    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);</span>
 <span class="fc" id="L101">                }</span>
 
 <span class="fc" id="L103">                String mensagemErro = Cliente.validarCPF(request.getCpf());</span>
-<span class="pc bpc" id="L104" title="1 of 2 branches missed.">                if (mensagemErro != null)</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">                if (mensagemErro != null)</span>
                 {
-<span class="nc" id="L106">                    ErrorResponse errorResponse = new ErrorResponse(mensagemErro);</span>
-<span class="nc" id="L107">                    return ResponseEntity.badRequest().body(errorResponse);</span>
+<span class="fc" id="L106">                    ErrorResponse errorResponse = new ErrorResponse(mensagemErro);</span>
+<span class="fc" id="L107">                    return ResponseEntity.badRequest().body(errorResponse);</span>
                 }
 
 

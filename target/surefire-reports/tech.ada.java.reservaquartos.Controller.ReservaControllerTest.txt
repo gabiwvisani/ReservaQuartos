@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tech.ada.java.reservaquartos.Controller.ReservaControllerTest
 -------------------------------------------------------------------------------
-Tests run: 8, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.195 s -- in tech.ada.java.reservaquartos.Controller.ReservaControllerTest
+Tests run: 16, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.385 s -- in tech.ada.java.reservaquartos.Controller.ReservaControllerTest

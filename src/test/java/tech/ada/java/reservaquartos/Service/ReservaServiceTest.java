@@ -10,8 +10,6 @@ import tech.ada.java.reservaquartos.Domain.Cliente;
 import tech.ada.java.reservaquartos.Domain.Quarto;
 import tech.ada.java.reservaquartos.Domain.Reserva;
 import tech.ada.java.reservaquartos.Repository.ReservaRepository;
-import tech.ada.java.reservaquartos.Request.ReservaRequest;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.ArrayList;

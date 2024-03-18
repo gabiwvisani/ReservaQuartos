@@ -220,11 +220,6 @@ public class ReservaControllerTest {
         ResponseEntity<?> responseEntity = reservaController.alterarReserva(2, 1, 1, reserva1);
 
         assertEquals(HttpStatus.OK, responseEntity.getStatusCode());
-//       // assertEquals(true, reservaRepository.findById(1).getStatusConfirmada());
-//        assertEquals(cliente1, ((Reserva) responseEntity.getHeaders()).getCliente());
-//        assertEquals(quarto1, ((Reserva) responseEntity.getBody()).getQuarto());
-//        assertEquals(3, ((Reserva) responseEntity.getBody()).getNumeroHospedes());
-//        assertEquals(reserva1.getFormaPagamento(), ((Reserva) responseEntity.getBody()).getFormaPagamento());
         verify(reservaRepository, times(1)).save(any(Reserva.class));
     }
 
@@ -248,9 +243,9 @@ public class ReservaControllerTest {
     @Test
     public void testAlterarReservaQuandoQuartoNaoExiste() {
         reserva2.setIdentificadorReserva(1);
-        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2)); // Stubbing para simular uma reserva existente
+        when(reservaRepository.findById(1)).thenReturn(Optional.of(reserva2));
         when(reservaService.validaData(any(), any())).thenReturn(true);
-        when(quartoRepository.findById(1)).thenReturn(Optional.empty()); // Stubbing para simular um quarto não encontrado
+        when(quartoRepository.findById(1)).thenReturn(Optional.empty());
 
         ResponseEntity<?> responseEntity = reservaController.alterarReserva(1, 1, 1, reserva1);
 
@@ -351,16 +346,6 @@ public class ReservaControllerTest {
                         .param("idQuarto","1")
                         .content(objectMapper.writeValueAsString(reserva1)))
                 .andExpect(status().isOk());
- //              .andExpect(jsonPath ("$.dataEntrada", equalTo(reserva1.getDataEntrada())));
-//                .andExpect(jsonPath("$.dataSaida", equalTo("2024-04-17")))
-              //  .andExpect(jsonPath("$.numeroHospedes", equalTo(reserva1.getNumeroHospedes())));
-//                .andExpect(jsonPath("$.statusConfirmada", equalTo(true)))
-//                .andExpect(jsonPath("$.formaPagamento", equalTo("DINHEIRO")));
-
-     //   ArgumentCaptor<Reserva> argumentCaptor = ArgumentCaptor.forClass(Reserva.class);
-        //verify(reservaRepository, times(1)).save(argumentCaptor.capture());
-     //   Reserva reservaAtualizada = argumentCaptor.getValue();
-      //  assertEquals(reserva2, reservaAtualizada);
         verify(reservaRepository, times(1)).save(any(Reserva.class));
     }
 }

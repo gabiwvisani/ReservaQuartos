@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-ReservaQuartos,tech.ada.java.reservaquartos.Domain,Reserva,62,466,40,56,0,38,33,45,3,27
+ReservaQuartos,tech.ada.java.reservaquartos.Domain,Reserva,62,466,41,55,0,38,34,44,3,27
 ReservaQuartos,tech.ada.java.reservaquartos.Domain,Reserva.FormaPagamento,0,21,0,0,0,1,0,1,0,1
 ReservaQuartos,tech.ada.java.reservaquartos.Domain,Cliente,41,294,31,37,0,21,24,30,0,20
 ReservaQuartos,tech.ada.java.reservaquartos.Domain,Quarto.TipoQuarto,0,21,0,0,0,1,0,1,0,1

@@ -73,14 +73,6 @@ public class QuartoTest {
                 "O preço por noite deve ser igual ao valor passado no construtor");
     }
 
-//    @Test
-//    public void testSetIdentificadorQuarto() {
-//        int identificadorEsperado = 1;
-//        quarto.setIdentificadorQuarto(identificadorEsperado);
-//        assertEquals(identificadorEsperado, quarto.getIdentificadorQuarto(),
-//                "O identificador do quarto deve ser igual ao valor esperado");
-//    }
-
     @Test
     public void testSetNumeroQuarto() {
         quarto.setNumeroQuarto(numeroQuarto);

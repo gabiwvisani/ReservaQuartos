@@ -56,9 +56,6 @@ class ClienteControllerTest {
     Optional<Cliente> clienteOptional1;
     Optional<Cliente> clienteOptional2;
     ClienteRequest request = new ClienteRequest();
-
-    //String clienteJson;
-
     @Mock
     private ModelMapper modelMapper;
 
@@ -91,9 +88,6 @@ class ClienteControllerTest {
         cliente3.setTelefone("91234-5678");
         cliente3.setEmail("fulano.ciclano@example.com");
 
-       // clienteJson = "{\"nomeCompleto\":\"gabriela visani\",\"cpf\":\"12342578902\",\"cep\":\"12345-578\",\"endereco\":\"Rua 123\",\"telefone\":\"91234-5678\",\"email\":\"fulano.ciclano@example.com\"}";
-
-
         clienteOptional1 = Optional.of(cliente1);
         clienteOptional2 = Optional.of(cliente2);
 
@@ -114,10 +108,8 @@ class ClienteControllerTest {
     @Test
     public void buscarTodosClientesTest() throws Exception {
 
-        //Preparar
         when(clienteRepository.findAll()).thenReturn(clientes);
 
-        //Ação
         mockMvc.perform(MockMvcRequestBuilders.get("/cliente").
                         contentType(MediaType.APPLICATION_JSON)).
                 andExpect(content().json(asJsonString(clientes)));

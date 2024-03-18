@@ -1,4 +1,4 @@
 -------------------------------------------------------------------------------
 Test set: tech.ada.java.reservaquartos.Domain.ReservaTest
 -------------------------------------------------------------------------------
-Tests run: 21, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.032 s -- in tech.ada.java.reservaquartos.Domain.ReservaTest
+Tests run: 20, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 3.046 s -- in tech.ada.java.reservaquartos.Domain.ReservaTest
